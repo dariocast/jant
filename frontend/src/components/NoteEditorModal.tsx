@@ -234,15 +234,101 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
 
           {/* Body: Edit mode vs Markdown Preview mode */}
           {activeTab === 'edit' ? (
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Scrivi qui i dettagli, elenchi (- [ ] task) o markdown..."
-              rows={8}
-              className="w-full text-base font-sans text-slate-800 bg-transparent placeholder-slate-400 focus:outline-none resize-none leading-relaxed"
-            />
+            <div className="flex flex-col gap-2">
+              {/* Markdown Helper Bar */}
+              <div className="flex items-center gap-1 py-1 px-1 bg-black/5 rounded-xl flex-wrap text-xs">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
+                    if (!textarea) return;
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const selected = content.substring(start, end);
+                    const newContent = content.substring(0, start) + '\n- [ ] ' + (selected || 'task') + content.substring(end);
+                    setContent(newContent);
+                  }}
+                  className="px-2 py-1 font-semibold rounded-lg text-slate-700 hover:bg-white hover:shadow-2xs transition-all"
+                  title="Aggiungi elemento Checklist"
+                >
+                  ☑ Checklist
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
+                    if (!textarea) return;
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const selected = content.substring(start, end);
+                    const newContent = content.substring(0, start) + '### ' + (selected || 'Intestazione') + content.substring(end);
+                    setContent(newContent);
+                  }}
+                  className="px-2 py-1 font-semibold rounded-lg text-slate-700 hover:bg-white hover:shadow-2xs transition-all"
+                  title="Intestazione H3"
+                >
+                  H3
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
+                    if (!textarea) return;
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const selected = content.substring(start, end);
+                    const newContent = content.substring(0, start) + '**' + (selected || 'grassetto') + '**' + content.substring(end);
+                    setContent(newContent);
+                  }}
+                  className="px-2 py-1 font-bold rounded-lg text-slate-700 hover:bg-white hover:shadow-2xs transition-all"
+                  title="Grassetto"
+                >
+                  B
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
+                    if (!textarea) return;
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const selected = content.substring(start, end);
+                    const newContent = content.substring(0, start) + '*' + (selected || 'corsivo') + '*' + content.substring(end);
+                    setContent(newContent);
+                  }}
+                  className="px-2 py-1 italic font-serif rounded-lg text-slate-700 hover:bg-white hover:shadow-2xs transition-all"
+                  title="Corsivo"
+                >
+                  I
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
+                    if (!textarea) return;
+                    const start = textarea.selectionStart;
+                    const end = textarea.selectionEnd;
+                    const selected = content.substring(start, end);
+                    const newContent = content.substring(0, start) + '`' + (selected || 'codice') + '`' + content.substring(end);
+                    setContent(newContent);
+                  }}
+                  className="px-2 py-1 font-mono rounded-lg text-slate-700 hover:bg-white hover:shadow-2xs transition-all"
+                  title="Codice inline"
+                >
+                  &lt;/&gt;
+                </button>
+              </div>
+
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Scrivi qui i dettagli, elenchi (- [ ] task) o markdown... (Salva con ⌘ + Invio)"
+                rows={8}
+                className="w-full text-base font-sans text-slate-800 bg-transparent placeholder-slate-400 focus:outline-none resize-none leading-relaxed"
+              />
+            </div>
           ) : (
-            <div className="min-h-[160px] p-3 rounded-2xl bg-white/60 border border-black/5">
+            <div className="min-h-[160px] p-4 rounded-2xl bg-white/70 border border-black/5 shadow-2xs">
               <MarkdownRenderer
                 content={content || '*Nessun contenuto inserito.*'}
                 onToggleCheckbox={handleTogglePreviewCheckbox}

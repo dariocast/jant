@@ -97,8 +97,8 @@ export const NoteCard: React.FC<NoteCardProps> = ({
 
   return (
     <div
-      className={`group relative rounded-2xl p-4 transition-all duration-200 border flex flex-col justify-between hover:shadow-card hover:-translate-y-0.5 ${
-        item.isPinned ? 'ring-2 ring-amber-300/60' : ''
+      className={`group relative rounded-3xl p-4 sm:p-5 transition-all duration-300 border flex flex-col justify-between hover:shadow-card hover:-translate-y-1 ${
+        item.isPinned ? 'ring-2 ring-amber-400/80 shadow-soft' : 'shadow-xs'
       }`}
       style={{
         backgroundColor: item.color || '#FFFFFF',
@@ -106,7 +106,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
       }}
     >
       {/* Top action header: Task checkmark, Pin button */}
-      <div className="flex items-start justify-between gap-2 mb-2">
+      <div className="flex items-start justify-between gap-2 mb-2.5">
         <div className="flex items-center gap-2">
           {item.isTask && !isTrashView && (
             <button
@@ -115,7 +115,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                 e.stopPropagation();
                 onToggleComplete(item.id, !item.isCompleted);
               }}
-              className="text-slate-500 hover:text-slate-800 transition-transform active:scale-90"
+              className="text-slate-500 hover:text-slate-900 transition-transform active:scale-90"
               title={item.isCompleted ? 'Segna come non completato' : 'Segna come completato'}
             >
               {item.isCompleted ? (

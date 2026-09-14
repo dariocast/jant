@@ -11,6 +11,7 @@ import { PwaInstallModal } from './components/PwaInstallModal';
 import { ShortcutsHelpModal } from './components/ShortcutsHelpModal';
 import { BackupModal } from './components/BackupModal';
 import { SemanticSearchResults } from './components/SemanticSearchResults';
+import { FilterCarousel } from './components/FilterCarousel';
 import {
   FileText,
   CheckSquare,
@@ -410,6 +411,22 @@ export const App: React.FC = () => {
 
         {/* Center Workspace */}
         <main className="flex-1 flex flex-col min-w-0">
+          {/* Category & Tag Filter Carousel */}
+          <FilterCarousel
+            currentFilter={filter}
+            onSelectFilter={setFilter}
+            selectedTag={selectedTag}
+            onSelectTag={setSelectedTag}
+            tags={allTags}
+            stats={stats ? {
+              notesCount: stats.notesCount,
+              tasksCount: stats.tasksCount,
+              pendingTasksCount: stats.pendingTasksCount,
+              activeTimersCount: stats.activeTimersCount,
+              totalHoursTracked: stats.totalHoursTracked,
+            } : undefined}
+          />
+
           {/* Quick Create Note/Task Bar (Only when not in trash or archive) */}
           {filter !== 'trash' && filter !== 'archived' && (
             <QuickCreateBar onCreate={handleCreate} />

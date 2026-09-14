@@ -3,11 +3,14 @@ import { PASTEL_COLORS } from '../types';
 import {
   Calendar,
   Tag,
-  Palette,
   Pin,
   Plus,
   CheckSquare,
   X,
+  ListTodo,
+  Heading,
+  Bold,
+  Code,
 } from 'lucide-react';
 
 interface QuickCreateBarProps {
@@ -30,9 +33,9 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [isPinned, setIsPinned] = useState(false);
-  const [showColorPicker, setShowColorPicker] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Close when clicking outside if fields are empty
   useEffect(() => {
@@ -57,6 +60,22 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
 
   const handleRemoveTag = (tagToRemove: string) => {
     setTags(tags.filter((t) => t !== tagToRemove));
+  };
+
+  const insertMarkdown = (prefix: string, suffix: string = '') => {
+    if (!textareaRef.current) return;
+    const start = textareaRef.current.selectionStart;
+    const end = textareaRef.current.selectionEnd;
+    const selected = content.substring(start, end);
+    const replacement = prefix + (selected || 'testo') + suffix;
+    const newContent = content.substring(0, start) + replacement + content.substring(end);
+    setContent(newContent);
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        textareaRef.current.setSelectionRange(start + prefix.length, start + prefix.length + (selected ? selected.length : 5));
+      }
+    }, 50);
   };
 
   const handleSubmit = () => {
@@ -99,8 +118,8 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
       ref={containerRef}
       onKeyDown={handleKeyDown}
       style={{ backgroundColor: color, borderColor: currentColor.border }}
-      className={`w-full max-w-2xl mx-auto rounded-2xl border transition-all duration-300 shadow-soft mb-8 ${
-        isExpanded ? 'p-4 sm:p-5 shadow-card ring-2 ring-amber-200/50' : 'p-2 sm:p-3'
+      className={`w-full max-w-2xl mx-auto rounded-3xl border transition-all duration-300 shadow-soft mb-8 ${
+        isExpanded ? 'p-4 sm:p-6 shadow-card ring-2 ring-amber-300/60' : 'p-2 sm:p-3 hover:shadow-card'
       }`}
     >
       {!isExpanded ? (
@@ -108,53 +127,50 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
           onClick={() => setIsExpanded(true)}
           className="flex items-center justify-between gap-3 cursor-text text-slate-400 px-3 py-1"
         >
-          <span className="text-sm font-medium">
-            Prendi una nota, annota un'idea o imposta una scadenza... (⌘N o C)
-          </span>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
+            <span className="w-8 h-8 rounded-full bg-amber-100/80 text-amber-900 flex items-center justify-center font-bold text-sm">
+              <Plus className="w-4 h-4" />
+            </span>
+            <span className="text-sm font-medium text-slate-600">
+              Scrivi una nota, checklist o imposta un task...
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
             <button
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 setIsExpanded(true);
-                // set current time + 1 hour as default task
                 const d = new Date(Date.now() + 3600000);
                 setDueDate(d.toISOString().slice(0, 16));
               }}
               title="Nuovo Task con Scadenza (T)"
-              className="p-1.5 text-slate-400 hover:text-amber-700 hover:bg-black/5 rounded-xl transition-all"
+              className="p-2 text-slate-400 hover:text-amber-800 hover:bg-black/5 rounded-xl transition-all"
             >
               <CheckSquare className="w-4 h-4" />
             </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsExpanded(true);
-              }}
-              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-black/5 rounded-xl transition-all"
-            >
-              <Plus className="w-4 h-4" />
-            </button>
+            <span className="hidden sm:inline-block text-[10px] font-mono font-bold text-slate-400 bg-black/5 px-2 py-1 rounded-lg">
+              ⌘N
+            </span>
           </div>
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-3.5">
           {/* Header row: Title & Pin */}
           <div className="flex items-center justify-between gap-2">
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Titolo"
+              placeholder="Titolo della nota..."
               autoFocus
-              className="w-full font-serif font-bold text-lg sm:text-xl text-slate-900 bg-transparent placeholder-slate-400 focus:outline-none"
+              className="w-full font-serif font-bold text-xl sm:text-2xl text-slate-900 bg-transparent placeholder-slate-400 focus:outline-none tracking-tight"
             />
             <button
               type="button"
               onClick={() => setIsPinned(!isPinned)}
-              className={`p-1.5 rounded-xl transition-all ${
-                isPinned ? 'text-amber-700 bg-amber-200/80' : 'text-slate-400 hover:text-slate-700 hover:bg-black/5'
+              className={`p-2 rounded-2xl transition-all ${
+                isPinned ? 'text-amber-800 bg-amber-200 shadow-xs' : 'text-slate-400 hover:text-slate-700 hover:bg-black/5'
               }`}
               title={isPinned ? 'In evidenza' : 'Metti in evidenza'}
             >
@@ -162,11 +178,69 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
             </button>
           </div>
 
+          {/* Markdown Quick Formatting Toolbar */}
+          <div className="flex items-center gap-1 py-1 border-y border-black/5 flex-wrap">
+            <button
+              type="button"
+              onClick={() => insertMarkdown('\n- [ ] ')}
+              className="px-2 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-black/5 flex items-center gap-1 transition-all"
+              title="Inserisci Checklist (- [ ])"
+            >
+              <ListTodo className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Checklist</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('### ')}
+              className="px-2 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-black/5 flex items-center gap-1 transition-all"
+              title="Intestazione (###)"
+            >
+              <Heading className="w-3.5 h-3.5 text-blue-600" />
+              <span>Titolo</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('**', '**')}
+              className="px-2 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-black/5 flex items-center gap-1 transition-all"
+              title="Grassetto (**testo**)"
+            >
+              <Bold className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => insertMarkdown('`', '`')}
+              className="px-2 py-1 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 hover:bg-black/5 flex items-center gap-1 transition-all"
+              title="Codice in linea (`codice`)"
+            >
+              <Code className="w-3.5 h-3.5 text-purple-600" />
+            </button>
+
+            {/* Horizontal Color Palette Selector */}
+            <div className="ml-auto flex items-center gap-1.5 pl-2">
+              {PASTEL_COLORS.map((c) => {
+                const isSelected = color === c.bg;
+                return (
+                  <button
+                    key={c.name}
+                    type="button"
+                    onClick={() => setColor(c.bg)}
+                    style={{ backgroundColor: c.bg, borderColor: c.border }}
+                    className={`w-5 h-5 rounded-full border transition-transform ${
+                      isSelected ? 'ring-2 ring-slate-900 scale-110' : 'hover:scale-110 opacity-80'
+                    }`}
+                    title={c.name}
+                  />
+                );
+              })}
+            </div>
+          </div>
+
           {/* Content Area */}
           <textarea
+            ref={textareaRef}
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Scrivi qui i dettagli, note o checklist (markdown supportato)... (Salva con ⌘ + Invio)"
+            placeholder="Scrivi qui dettagli, note o checklist... (Supporta Markdown)"
             rows={3}
             className="w-full text-sm font-sans text-slate-800 bg-transparent placeholder-slate-400 focus:outline-none resize-none leading-relaxed"
           />
@@ -177,7 +251,7 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-md bg-black/5 text-slate-700"
+                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-black/5 text-slate-700"
                 >
                   <span>#{tag}</span>
                   <button
@@ -192,47 +266,18 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
             </div>
           )}
 
-          {/* Toolbar Row */}
+          {/* Toolbar Row: Date, Tags & Submit */}
           <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-black/5">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              {/* Color Picker */}
-              <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setShowColorPicker(!showColorPicker)}
-                  className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-black/5 rounded-xl transition-all"
-                  title="Scegli colore pastello"
-                >
-                  <Palette className="w-4 h-4" />
-                </button>
-                {showColorPicker && (
-                  <div className="absolute bottom-full left-0 mb-2 p-1.5 bg-white rounded-xl shadow-modal border border-slate-200 grid grid-cols-5 gap-1 z-50">
-                    {PASTEL_COLORS.map((c) => (
-                      <button
-                        key={c.name}
-                        type="button"
-                        onClick={() => {
-                          setColor(c.bg);
-                          setShowColorPicker(false);
-                        }}
-                        style={{ backgroundColor: c.bg, borderColor: c.border }}
-                        className="w-5 h-5 rounded-full border shadow-xs hover:scale-110 transition-transform"
-                        title={c.name}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-
+            <div className="flex items-center gap-2 flex-wrap">
               {/* Due Date (Transforms into Task) */}
-              <div className="flex items-center gap-1 text-xs text-slate-600 bg-black/5 px-2 py-1 rounded-xl">
+              <div className="flex items-center gap-1.5 text-xs text-slate-700 bg-black/5 px-2.5 py-1 rounded-xl">
                 <Calendar className="w-3.5 h-3.5 text-slate-500" />
                 <input
                   type="datetime-local"
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  className="bg-transparent text-xs text-slate-700 focus:outline-none"
-                  title="Imposta data di scadenza (trasforma in Task)"
+                  className="bg-transparent text-xs text-slate-800 font-medium focus:outline-none"
+                  title="Imposta data di scadenza"
                 />
                 {dueDate && (
                   <button
@@ -246,7 +291,7 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
               </div>
 
               {/* Tag Input */}
-              <div className="flex items-center gap-1 text-xs text-slate-600 bg-black/5 px-2 py-1 rounded-xl">
+              <div className="flex items-center gap-1 text-xs text-slate-700 bg-black/5 px-2.5 py-1 rounded-xl">
                 <Tag className="w-3.5 h-3.5 text-slate-500" />
                 <input
                   type="text"
@@ -259,13 +304,13 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
                     }
                   }}
                   placeholder="Aggiungi tag..."
-                  className="w-24 bg-transparent text-xs text-slate-700 focus:outline-none placeholder-slate-400"
+                  className="w-24 bg-transparent text-xs text-slate-800 focus:outline-none placeholder-slate-400 font-medium"
                 />
                 {tagInput && (
                   <button
                     type="button"
                     onClick={handleAddTag}
-                    className="text-xs font-bold text-amber-700 hover:text-amber-800"
+                    className="text-xs font-bold text-amber-800 hover:text-amber-900"
                   >
                     +
                   </button>
@@ -278,17 +323,17 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
               <button
                 type="button"
                 onClick={() => setIsExpanded(false)}
-                className="px-3 py-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 hover:bg-black/5 rounded-xl transition-all"
+                className="px-3.5 py-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 hover:bg-black/5 rounded-xl transition-all"
               >
                 Annulla
               </button>
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="px-4 py-1.5 text-xs font-bold text-slate-900 bg-amber-300 hover:bg-amber-400 active:scale-95 rounded-xl shadow-xs transition-all flex items-center gap-1.5"
+                className="px-4 py-2 text-xs font-bold text-slate-900 bg-amber-400 hover:bg-amber-500 active:scale-95 rounded-2xl shadow-sm transition-all flex items-center gap-1.5"
               >
-                <span>Salva</span>
-                <Plus className="w-3.5 h-3.5" />
+                <span>Crea nota</span>
+                <span className="text-[10px] font-mono opacity-60">⌘↵</span>
               </button>
             </div>
           </div>
