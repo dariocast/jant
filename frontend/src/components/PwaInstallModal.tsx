@@ -285,7 +285,7 @@ export const PwaInstallModal: React.FC<PwaInstallModalProps> = ({
         <div className="p-4 border-t border-slate-100 bg-[#FBFBFA] flex items-center justify-between text-xs text-slate-500">
           <div className="flex items-center gap-1.5 font-medium">
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>PWA Supercell Store Pattern Standard</span>
+            <span>J.U.N.T. Progressive Web App</span>
           </div>
           <button
             onClick={onClose}

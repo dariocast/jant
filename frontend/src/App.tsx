@@ -8,7 +8,6 @@ import { QuickCreateBar } from './components/QuickCreateBar';
 import { NoteEditorModal } from './components/NoteEditorModal';
 import { StatsDrawer } from './components/StatsDrawer';
 import { PwaInstallModal } from './components/PwaInstallModal';
-import { PwaBanner } from './components/PwaBanner';
 import { SemanticSearchResults } from './components/SemanticSearchResults';
 import {
   FileText,
@@ -189,12 +188,6 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FBFBFA]">
-      {/* Top Discrete PWA Banner */}
-      <PwaBanner
-        onOpenModal={() => setIsPwaModalOpen(true)}
-        isStandalone={isStandalone}
-      />
-
       {/* Main App Header */}
       <Header
         searchQuery={searchQuery}
