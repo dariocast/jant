@@ -1,0 +1,37 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Item {
+  id          String    @id @default(cuid())
+  title       String    @default("")
+  content     String    @default("")
+  color       String    @default("#FFFFFF") // Pastel colors e.g. #FEF3C7, #E0F2FE, #F3E8FF, #DCFCE7, #FEE2E2
+  isPinned    Boolean   @default(false)
+  isArchived  Boolean   @default(false)
+  isTrashed   Boolean   @default(false)
+  
+  // Task specific fields (Unified entity: presence of dueDate or isCompleted transforms note into task)
+  dueDate     DateTime?
+  isCompleted Boolean   @default(false)
+  
+  // Time tracking logs stored as JSON array: [{ "start": "ISO", "end": "ISO" | null }]
+  timeLogs    String    @default("[]")
+  
+  // Tags stored as JSON array: ["work", "personal"]
+  tags        String    @default("[]")
+  
+  // Vector embedding stored as binary BLOB (Float32Array)
+  embedding   Bytes?
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([isPinned, isArchived, isTrashed])
+  @@index([dueDate])
+}
