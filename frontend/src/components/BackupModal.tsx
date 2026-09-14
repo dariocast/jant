@@ -28,7 +28,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
     try {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({
         app: 'J.U.N.T.',
-        version: '0.2.0',
+        version: '0.2.1',
         exportedAt: new Date().toISOString(),
         count: items.length,
         items,

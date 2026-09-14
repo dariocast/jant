@@ -133,7 +133,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Version Footer at the bottom */}
       <div className="mt-auto pt-6 border-t border-stone-200/60 flex items-center justify-between text-[11px] font-mono text-stone-500 tracking-wider">
         <span>J.U.N.T.</span>
-        <span>v0.2.0</span>
+        <span>v0.2.1</span>
       </div>
     </aside>
   );

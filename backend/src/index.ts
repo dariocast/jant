@@ -18,7 +18,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = new Hono();
-const VERSION = '0.2.0';
+const VERSION = '0.2.1';
 
 function getLocalIpAddresses(): string[] {
   const interfaces = os.networkInterfaces();

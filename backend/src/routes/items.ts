@@ -243,7 +243,7 @@ itemsRouter.get('/backup/export', async (c) => {
 
   return c.json({
     app: 'J.U.N.T.',
-    version: '0.2.0',
+    version: '0.2.1',
     exportedAt: new Date().toISOString(),
     count: formatted.length,
     items: formatted,

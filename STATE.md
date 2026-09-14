@@ -1,7 +1,7 @@
 # STATE.md - J.U.N.T. Project Status
 
 ## Version
-Current Version: `v0.2.0` (Consistent across Backend, Frontend, Mobile, and Docker)
+Current Version: `v0.2.1` (Consistent across Backend, Frontend, Mobile, and Docker)
 
 ## Architecture & Brand Updates
 - **Brand Identity**:
@@ -40,3 +40,25 @@ Current Version: `v0.2.0` (Consistent across Backend, Frontend, Mobile, and Dock
 - [x] Milestone 6: Native Mobile Launcher Icons via `flutter_launcher_icons` (`v0.1.2`)
 - [x] Milestone 7: UI Cleanup - Removed banner and cleaned modal labels (`v0.1.3`)
 - [x] Milestone 8: Keyboard Shortcuts, Icon Polish, Import/Export Backup & Full Markdown Support (`v0.2.0`)
+- [x] Milestone 9: UX & Accessibility Review — feedback, undo, conferme distruttive e parità web/mobile (`v0.2.1`)
+
+## UX & Accessibility Review (v0.2.1)
+**Frontend (`/frontend`)**
+- Corretta violazione delle *Rules of Hooks* in `NoteEditorModal` (hook dichiarati dopo un `return null`)
+- Ricerca semantica AI ora raggiungibile dall'interfaccia (toggle ✦ nella barra di ricerca)
+- Nessuna via d'uscita perde le modifiche: `Esc`, `X` e clic sullo sfondo salvano coerentemente
+- Toast globali con azione **Annulla** sullo spostamento nel cestino; conferma esplicita sull'eliminazione definitiva
+- Debounce di 300 ms sulla ricerca testuale (prima una richiesta per ogni tasto)
+- Modali con `role="dialog"`, focus trap, blocco dello scroll di fondo e ripristino del focus
+- Aree di tocco ≥44 px, `aria-label` sui controlli icona, focus ring visibile, zoom riabilitato, supporto `prefers-reduced-motion`
+- Skeleton di caricamento al posto dello stato vuoto ingannevole; stati vuoti con azione suggerita
+
+**Mobile (`/mobile`)**
+- Undo sullo spostamento nel cestino e ripristino dal cestino (`RestoreItemEvent`)
+- Conferma sulle eliminazioni; `PopScope` salva anche all'uscita con il gesto di sistema
+- Timer, campo tag e barra Markdown disponibili anche in `EditItemScreen` (parità con il web)
+- Debounce di 300 ms sulla ricerca; `RefreshIndicator` che attende la sincronizzazione reale
+- Filtro attivo sempre visibile nella barra superiore e voce evidenziata nel drawer
+- Sezioni "In evidenza" / "Altre note & task" come sul web; `ValueKey` sulle schede
+- Aree di tocco 48 dp, tooltip e `Semantics` sui controlli icona, spazio finale sotto il FAB
+- Localizzazione italiana di date picker e formati data (`flutter_localizations`)
