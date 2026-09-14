@@ -11,7 +11,6 @@ import { PwaInstallModal } from './components/PwaInstallModal';
 import { ShortcutsHelpModal } from './components/ShortcutsHelpModal';
 import { BackupModal } from './components/BackupModal';
 import { SemanticSearchResults } from './components/SemanticSearchResults';
-import { FilterCarousel } from './components/FilterCarousel';
 import {
   FileText,
   CheckSquare,
@@ -411,22 +410,6 @@ export const App: React.FC = () => {
 
         {/* Center Workspace */}
         <main className="flex-1 flex flex-col min-w-0">
-          {/* Category & Tag Filter Carousel */}
-          <FilterCarousel
-            currentFilter={filter}
-            onSelectFilter={setFilter}
-            selectedTag={selectedTag}
-            onSelectTag={setSelectedTag}
-            tags={allTags}
-            stats={stats ? {
-              notesCount: stats.notesCount,
-              tasksCount: stats.tasksCount,
-              pendingTasksCount: stats.pendingTasksCount,
-              activeTimersCount: stats.activeTimersCount,
-              totalHoursTracked: stats.totalHoursTracked,
-            } : undefined}
-          />
-
           {/* Quick Create Note/Task Bar (Only when not in trash or archive) */}
           {filter !== 'trash' && filter !== 'archived' && (
             <QuickCreateBar onCreate={handleCreate} />
@@ -481,8 +464,8 @@ export const App: React.FC = () => {
           {/* Pinned Section */}
           {pinnedItems.length > 0 && filter !== 'trash' && filter !== 'archived' && (
             <section className="mb-8">
-              <div className="text-xs font-bold text-amber-800 uppercase tracking-wider mb-3 flex items-center gap-1.5 px-1">
-                <Pin className="w-3.5 h-3.5 text-amber-600 fill-current" />
+              <div className="text-[11px] font-sans font-bold tracking-widest text-amber-900/80 uppercase mb-3 flex items-center gap-1.5 px-1">
+                <Pin className="w-3.5 h-3.5 text-amber-700 fill-current" />
                 <span>In Evidenza ({pinnedItems.length})</span>
               </div>
               <div
@@ -515,7 +498,7 @@ export const App: React.FC = () => {
           {regularItems.length > 0 && (
             <section>
               {pinnedItems.length > 0 && filter !== 'trash' && filter !== 'archived' && (
-                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5 px-1">
+                <div className="text-[11px] font-sans font-bold tracking-widest text-stone-400 uppercase mb-3 flex items-center gap-1.5 px-1">
                   <Layers className="w-3.5 h-3.5" />
                   <span>Altre Note &amp; Task ({regularItems.length})</span>
                 </div>

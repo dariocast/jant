@@ -33,15 +33,15 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleMobileMenu,
 }) => {
   return (
-    <header className="sticky top-0 z-30 bg-[#FBFBFA]/95 backdrop-blur-md border-b border-slate-200/80 px-3 sm:px-6 py-2.5 sm:py-3 transition-all w-full overflow-hidden">
+    <header className="sticky top-0 z-30 bg-[#FAF9F6]/95 backdrop-blur-md border-b border-stone-200/80 px-3 sm:px-6 py-2.5 sm:py-3 transition-all w-full overflow-hidden">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
         {/* Left: Mobile Menu Toggle & Brand */}
-        <div className="flex items-center gap-2 sm:gap-3 select-none shrink-0">
+        <div className="flex items-center gap-2.5 sm:gap-3 select-none shrink-0">
           {/* Mobile Hamburger Button */}
           {onToggleMobileMenu && (
             <button
               onClick={onToggleMobileMenu}
-              className="p-1.5 md:hidden text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all"
+              className="p-1.5 md:hidden text-stone-600 hover:text-stone-900 hover:bg-stone-100 rounded-xl transition-all"
               title="Menu Sezioni"
             >
               {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -51,17 +51,14 @@ export const Header: React.FC<HeaderProps> = ({
           <img
             src="/logo-light.png"
             alt="J.U.N.T. Logo"
-            className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl object-cover shadow-soft border border-slate-200/60 shrink-0"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl object-cover shadow-2xs border border-stone-200/70 shrink-0"
           />
           <div>
-            <h1 className="font-serif font-bold text-xl sm:text-2xl md:text-3xl text-slate-900 tracking-tight leading-none flex items-center gap-1.5">
+            <h1 className="font-serif font-bold text-xl sm:text-2xl text-stone-900 tracking-tight leading-none">
               J.U.N.T.
-              <span className="hidden lg:inline-block text-[10px] font-sans font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200/60">
-                v0.2.0
-              </span>
             </h1>
-            <p className="hidden xl:block text-[11px] text-slate-500 font-medium">
-              Notes • Tasks • Atomic Timer
+            <p className="hidden xl:block text-[10px] text-stone-400 font-sans tracking-widest uppercase mt-0.5">
+              Notes &amp; Tasks
             </p>
           </div>
         </div>
@@ -69,15 +66,15 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Center: Search Bar */}
         <div className="flex-1 max-w-lg min-w-0 mx-1 sm:mx-4">
           <div className="relative flex items-center">
-            <div className="absolute left-3 text-slate-400 pointer-events-none">
+            <div className="absolute left-3.5 text-stone-400 pointer-events-none">
               <Search className="w-4 h-4" />
             </div>
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder="Cerca note, task, tag (⌘K o /)..."
-              className="w-full pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm rounded-full border border-slate-200/90 bg-white focus:ring-2 focus:ring-amber-300/60 focus:border-amber-400 text-slate-800 placeholder-slate-400 shadow-2xs transition-all focus:outline-none"
+              placeholder="Cerca note, task o tag (⌘K o /)..."
+              className="w-full pl-9 pr-3 py-1.5 sm:py-2 text-xs sm:text-sm rounded-xl border border-stone-200/90 bg-white/90 focus:bg-white focus:ring-1 focus:ring-amber-500/40 focus:border-amber-600 text-stone-800 placeholder-stone-400 transition-all focus:outline-none shadow-2xs"
             />
           </div>
         </div>

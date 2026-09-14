@@ -118,21 +118,21 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
       ref={containerRef}
       onKeyDown={handleKeyDown}
       style={{ backgroundColor: color, borderColor: currentColor.border }}
-      className={`w-full max-w-2xl mx-auto rounded-3xl border transition-all duration-300 shadow-soft mb-8 ${
-        isExpanded ? 'p-4 sm:p-6 shadow-card ring-2 ring-amber-300/60' : 'p-2 sm:p-3 hover:shadow-card'
+      className={`w-full max-w-2xl mx-auto rounded-2xl border transition-all duration-200 shadow-soft mb-8 ${
+        isExpanded ? 'p-4 sm:p-5 shadow-card ring-1 ring-amber-500/60' : 'p-2 sm:p-3 hover:shadow-card'
       }`}
     >
       {!isExpanded ? (
         <div
           onClick={() => setIsExpanded(true)}
-          className="flex items-center justify-between gap-3 cursor-text text-slate-400 px-3 py-1"
+          className="flex items-center justify-between gap-3 cursor-text text-stone-400 px-3 py-1"
         >
           <div className="flex items-center gap-3">
-            <span className="w-8 h-8 rounded-full bg-amber-100/80 text-amber-900 flex items-center justify-center font-bold text-sm">
+            <span className="w-7 h-7 rounded-lg bg-amber-100/80 text-amber-900 flex items-center justify-center font-bold text-sm">
               <Plus className="w-4 h-4" />
             </span>
-            <span className="text-sm font-medium text-slate-600">
-              Scrivi una nota, checklist o imposta un task...
+            <span className="text-sm font-medium text-stone-600">
+              Scrivi una nota, annota un'idea o imposta un task...
             </span>
           </div>
           <div className="flex items-center gap-1.5">

@@ -45,7 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   return (
-    <aside className="w-full md:w-64 shrink-0 flex flex-col gap-6 py-2 select-none">
+    <aside className="w-full md:w-64 shrink-0 flex flex-col gap-6 py-2 select-none h-full">
       {/* Navigation Links */}
       <div className="flex flex-col gap-1">
         {navItems.map((item) => {
@@ -60,18 +60,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
               }}
               className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-amber-100/80 text-amber-950 font-semibold shadow-xs'
-                  : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900'
+                  ? 'bg-amber-100/70 text-amber-950 font-semibold border-l-2 border-amber-700 shadow-2xs'
+                  : 'text-stone-600 hover:bg-stone-100/80 hover:text-stone-900'
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className={isActive ? 'text-amber-800' : 'text-slate-500'}>
+                <span className={isActive ? 'text-amber-800' : 'text-stone-400'}>
                   {item.icon}
                 </span>
                 <span>{item.label}</span>
               </div>
               {item.count !== undefined && item.count > 0 && (
-                <span className="text-xs px-2 py-0.5 rounded-full bg-slate-200/70 text-slate-700 font-semibold">
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-stone-200/60 text-stone-700 font-bold">
                   {item.count}
                 </span>
               )}
@@ -82,16 +82,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Time Tracking Widget Badge */}
       {stats && stats.activeTimersCount > 0 && (
-        <div className="p-3.5 rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-300/40">
+        <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200/80">
           <div className="flex items-center gap-2 text-amber-900 font-bold text-xs mb-1">
-            <span className="relative flex h-2.5 w-2.5">
+            <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
             </span>
-            <span>{stats.activeTimersCount} Timer attivo/i</span>
+            <span>{stats.activeTimersCount} Focus attivo/i</span>
           </div>
           <p className="text-[11px] text-amber-800/80 font-medium">
-            Ore totali tracciate: <strong className="text-amber-950">{stats.totalHoursTracked}h</strong>
+            Ore tracciate: <strong className="text-amber-950 font-mono">{stats.totalHoursTracked}h</strong>
           </p>
         </div>
       )}
@@ -99,9 +99,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Tags Section */}
       {tags.length > 0 && (
         <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between px-3 text-xs font-bold text-slate-400 uppercase tracking-wider">
+          <div className="flex items-center justify-between px-3 text-[11px] font-bold text-stone-400 uppercase tracking-widest font-sans">
             <span>Tag & Progetti</span>
-            <Tag className="w-3 h-3 text-slate-400" />
+            <Tag className="w-3 h-3 text-stone-400" />
           </div>
           <div className="flex flex-wrap gap-1.5 px-2">
             {tags.map((tag) => {
@@ -115,17 +115,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   }}
                   className={`text-xs px-2.5 py-1 rounded-lg transition-all font-medium flex items-center gap-1 ${
                     isSelected
-                      ? 'bg-slate-900 text-white shadow-sm'
-                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                      ? 'bg-stone-900 text-white shadow-2xs'
+                      : 'bg-stone-100 text-stone-600 hover:bg-stone-200/80'
                   }`}
                 >
-                  <span>#{tag}</span>
+                  <span className="text-amber-700 font-bold">#</span>
+                  <span>{tag}</span>
                 </button>
               );
             })}
           </div>
         </div>
       )}
+
+      {/* Version Footer at the bottom */}
+      <div className="mt-auto pt-6 border-t border-stone-200/60 flex items-center justify-between text-[11px] font-mono text-stone-400 tracking-wider">
+        <span>J.U.N.T.</span>
+        <span>v0.2.0</span>
+      </div>
     </aside>
   );
 };
