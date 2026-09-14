@@ -47,7 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside className="w-full md:w-64 shrink-0 flex flex-col gap-6 py-2 select-none h-full">
       {/* Navigation Links */}
-      <div className="flex flex-col gap-1">
+      <nav aria-label="Sezioni" className="flex flex-col gap-1">
         {navItems.map((item) => {
           const isActive = currentFilter === item.id && !selectedTag;
           return (
@@ -58,27 +58,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 onSelectTag(undefined);
                 onCloseMobile?.();
               }}
-              className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
+              aria-current={isActive ? 'page' : undefined}
+              className={`flex items-center justify-between px-3.5 py-3 rounded-xl text-sm font-medium transition-all ${
                 isActive
                   ? 'bg-amber-100/70 text-amber-950 font-semibold border-l-2 border-amber-700 shadow-2xs'
-                  : 'text-stone-600 hover:bg-stone-100/80 hover:text-stone-900'
+                  : 'text-stone-700 hover:bg-stone-100/80 hover:text-stone-900'
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className={isActive ? 'text-amber-800' : 'text-stone-400'}>
+                <span aria-hidden="true" className={isActive ? 'text-amber-800' : 'text-stone-500'}>
                   {item.icon}
                 </span>
                 <span>{item.label}</span>
               </div>
               {item.count !== undefined && item.count > 0 && (
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-stone-200/60 text-stone-700 font-bold">
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-stone-200/80 text-stone-800 font-bold">
                   {item.count}
                 </span>
               )}
             </button>
           );
         })}
-      </div>
+      </nav>
 
       {/* Time Tracking Widget Badge */}
       {stats && stats.activeTimersCount > 0 && (
@@ -99,9 +100,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Tags Section */}
       {tags.length > 0 && (
         <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between px-3 text-[11px] font-bold text-stone-400 uppercase tracking-widest font-sans">
-            <span>Tag & Progetti</span>
-            <Tag className="w-3 h-3 text-stone-400" />
+          <div className="flex items-center justify-between px-3 text-[11px] font-bold text-stone-600 uppercase tracking-widest font-sans">
+            <span>Tag &amp; progetti</span>
+            <Tag className="w-3 h-3 text-stone-500" aria-hidden="true" />
           </div>
           <div className="flex flex-wrap gap-1.5 px-2">
             {tags.map((tag) => {
@@ -113,10 +114,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onSelectTag(isSelected ? undefined : tag);
                     onCloseMobile?.();
                   }}
-                  className={`text-xs px-2.5 py-1 rounded-lg transition-all font-medium flex items-center gap-1 ${
+                  aria-pressed={isSelected}
+                  className={`text-xs px-2.5 py-2 rounded-lg transition-all font-medium flex items-center gap-1 ${
                     isSelected
                       ? 'bg-stone-900 text-white shadow-2xs'
-                      : 'bg-stone-100 text-stone-600 hover:bg-stone-200/80'
+                      : 'bg-stone-100 text-stone-700 hover:bg-stone-200/80'
                   }`}
                 >
                   <span className="text-amber-700 font-bold">#</span>
@@ -129,7 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       )}
 
       {/* Version Footer at the bottom */}
-      <div className="mt-auto pt-6 border-t border-stone-200/60 flex items-center justify-between text-[11px] font-mono text-stone-400 tracking-wider">
+      <div className="mt-auto pt-6 border-t border-stone-200/60 flex items-center justify-between text-[11px] font-mono text-stone-500 tracking-wider">
         <span>J.U.N.T.</span>
         <span>v0.2.0</span>
       </div>

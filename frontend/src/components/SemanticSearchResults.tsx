@@ -5,6 +5,7 @@ import { Sparkles, Calendar, Tag } from 'lucide-react';
 interface SemanticSearchResultsProps {
   query: string;
   results: SemanticSearchResult[];
+  isLoading?: boolean;
   onSelectResult: (id: string) => void;
   onClear: () => void;
 }
@@ -12,6 +13,7 @@ interface SemanticSearchResultsProps {
 export const SemanticSearchResults: React.FC<SemanticSearchResultsProps> = ({
   query,
   results,
+  isLoading = false,
   onSelectResult,
   onClear,
 }) => {
@@ -20,7 +22,7 @@ export const SemanticSearchResults: React.FC<SemanticSearchResultsProps> = ({
       <div className="flex items-center justify-between gap-2 mb-4">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-xl bg-purple-200 text-purple-900">
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className={`w-4 h-4 ${isLoading ? 'animate-pulse' : ''}`} aria-hidden="true" />
           </div>
           <div>
             <h3 className="font-serif font-bold text-lg text-purple-950">
@@ -33,14 +35,24 @@ export const SemanticSearchResults: React.FC<SemanticSearchResultsProps> = ({
         </div>
         <button
           onClick={onClear}
-          className="text-xs font-bold text-purple-700 hover:text-purple-950 px-3 py-1.5 rounded-xl hover:bg-purple-100 transition-all"
+          className="shrink-0 text-xs font-bold text-purple-800 hover:text-purple-950 px-3 py-2.5 rounded-xl hover:bg-purple-100 transition-all"
         >
           Chiudi risultati AI
         </button>
       </div>
 
-      {results.length === 0 ? (
-        <div className="text-center py-6 text-purple-400 text-xs font-medium">
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" aria-hidden="true">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="p-4 rounded-2xl border border-purple-200/60 bg-white/60 flex flex-col gap-2">
+              <div className="skeleton h-4 w-20 rounded-full" />
+              <div className="skeleton h-4 w-3/4 rounded-lg" />
+              <div className="skeleton h-3 w-full rounded-full" />
+            </div>
+          ))}
+        </div>
+      ) : results.length === 0 ? (
+        <div className="text-center py-6 text-purple-800 text-sm font-medium">
           Nessuna nota o task correlato trovato. Prova con altri termini o concetti.
         </div>
       ) : (
@@ -52,7 +64,15 @@ export const SemanticSearchResults: React.FC<SemanticSearchResultsProps> = ({
             return (
               <div
                 key={res.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => onSelectResult(res.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onSelectResult(res.id);
+                  }
+                }}
                 style={{ backgroundColor: res.color, borderColor: currentColor.border }}
                 className="cursor-pointer p-4 rounded-2xl border shadow-xs hover:shadow-card hover:-translate-y-0.5 transition-all flex flex-col justify-between"
               >
@@ -73,7 +93,7 @@ export const SemanticSearchResults: React.FC<SemanticSearchResultsProps> = ({
                     {res.title || 'Senza titolo'}
                   </h4>
 
-                  <p className="font-sans text-xs text-slate-700/80 mt-1 line-clamp-3 leading-relaxed">
+                  <p className="font-sans text-xs text-slate-700 mt-1 line-clamp-3 leading-relaxed">
                     {res.content}
                   </p>
                 </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Item, PASTEL_COLORS } from '../types';
 import {
   Pin,
@@ -46,6 +46,26 @@ export const NoteCard: React.FC<NoteCardProps> = ({
 }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [liveDuration, setLiveDuration] = useState(item.totalDurationSeconds);
+  const colorPickerRef = useRef<HTMLDivElement>(null);
+
+  // La palette si chiude al clic fuori o con Esc, come ogni popover.
+  useEffect(() => {
+    if (!showColorPicker) return;
+    const handlePointerDown = (e: MouseEvent) => {
+      if (colorPickerRef.current && !colorPickerRef.current.contains(e.target as Node)) {
+        setShowColorPicker(false);
+      }
+    };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowColorPicker(false);
+    };
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [showColorPicker]);
 
   // Live timer interval if timer is actively running
   useEffect(() => {
@@ -115,7 +135,9 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                 e.stopPropagation();
                 onToggleComplete(item.id, !item.isCompleted);
               }}
-              className="text-stone-500 hover:text-stone-900 transition-transform active:scale-90"
+              className="tap-target p-1 -m-1 text-stone-600 hover:text-stone-900 transition-transform active:scale-90"
+              aria-pressed={item.isCompleted}
+              aria-label={item.isCompleted ? 'Segna come non completato' : 'Segna come completato'}
               title={item.isCompleted ? 'Segna come non completato' : 'Segna come completato'}
             >
               {item.isCompleted ? (
@@ -151,11 +173,13 @@ export const NoteCard: React.FC<NoteCardProps> = ({
               e.stopPropagation();
               onTogglePin(item.id, !item.isPinned);
             }}
-            className={`p-1.5 rounded-lg transition-all ${
+            className={`tap-target p-2 rounded-lg transition-all ${
               item.isPinned
-                ? 'text-amber-700 bg-amber-200/80'
-                : 'text-slate-400 opacity-0 group-hover:opacity-100 hover:bg-black/5 hover:text-slate-700'
+                ? 'text-amber-800 bg-amber-200/80'
+                : 'text-slate-500 opacity-100 md:opacity-0 md:group-hover:opacity-100 md:focus-visible:opacity-100 hover:bg-black/5 hover:text-slate-800'
             }`}
+            aria-pressed={item.isPinned}
+            aria-label={item.isPinned ? 'Rimuovi dall\'evidenza' : 'Metti in evidenza'}
             title={item.isPinned ? 'Rimuovi evidenza' : 'Metti in evidenza'}
           >
             <Pin className={`w-3.5 h-3.5 ${item.isPinned ? 'fill-current' : ''}`} />
@@ -165,8 +189,17 @@ export const NoteCard: React.FC<NoteCardProps> = ({
 
       {/* Card Body - Clickable to Open Edit Modal */}
       <div
+        role="button"
+        tabIndex={0}
         onClick={() => onEdit(item)}
-        className="cursor-pointer flex-1 flex flex-col gap-1.5"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onEdit(item);
+          }
+        }}
+        aria-label={`Apri ${item.title || 'nota senza titolo'}`}
+        className="cursor-pointer flex-1 flex flex-col gap-1.5 rounded-xl"
       >
         {item.title && (
           <h3
@@ -213,19 +246,26 @@ export const NoteCard: React.FC<NoteCardProps> = ({
               e.stopPropagation();
               onToggleTimer(item.id);
             }}
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold transition-all shadow-xs ${
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-all shadow-xs ${
               item.isTimerRunning
-                ? 'bg-rose-500 text-white animate-pulse shadow-rose-200'
+                ? 'bg-rose-600 text-white shadow-rose-200'
                 : liveDuration > 0
                 ? 'bg-amber-100/90 text-amber-900 hover:bg-amber-200/90 border border-amber-300/60'
-                : 'bg-white/80 text-slate-600 hover:bg-slate-100 border border-slate-200/60'
+                : 'bg-white/80 text-slate-700 hover:bg-slate-100 border border-slate-200/60'
             }`}
+            aria-label={item.isTimerRunning ? 'Ferma il timer' : 'Avvia il timer'}
             title={item.isTimerRunning ? 'Ferma timer' : 'Avvia timer atomico'}
           >
             {item.isTimerRunning ? (
-              <Square className="w-3 h-3 fill-current" />
+              <>
+                <span className="relative flex h-2 w-2" aria-hidden="true">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
+                </span>
+                <Square className="w-3 h-3 fill-current" aria-hidden="true" />
+              </>
             ) : (
-              <Play className="w-3 h-3 fill-current" />
+              <Play className="w-3 h-3 fill-current" aria-hidden="true" />
             )}
             <span className="font-mono text-[11px] font-semibold">
               {formatTime(liveDuration)}
@@ -239,14 +279,15 @@ export const NoteCard: React.FC<NoteCardProps> = ({
         )}
 
         {/* Action icons */}
-        <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-0.5 sm:gap-1 opacity-100 transition-opacity">
           {isTrashView ? (
             <>
               {onRestore && (
                 <button
                   type="button"
                   onClick={() => onRestore(item.id)}
-                  className="p-1 text-slate-600 hover:text-emerald-700 hover:bg-black/5 rounded-lg transition-all"
+                  className="tap-target p-2 text-slate-600 hover:text-emerald-800 hover:bg-black/5 rounded-lg transition-all"
+                  aria-label="Ripristina dal cestino"
                   title="Ripristina dal cestino"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -255,7 +296,8 @@ export const NoteCard: React.FC<NoteCardProps> = ({
               <button
                 type="button"
                 onClick={() => onTrash(item.id)}
-                className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all"
+                className="tap-target p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-all"
+                aria-label="Elimina definitivamente"
                 title="Elimina definitivamente"
               >
                 <Trash2 className="w-3.5 h-3.5" />
@@ -264,14 +306,16 @@ export const NoteCard: React.FC<NoteCardProps> = ({
           ) : (
             <>
               {/* Color picker toggle */}
-              <div className="relative">
+              <div className="relative" ref={colorPickerRef}>
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowColorPicker(!showColorPicker);
                   }}
-                  className="p-1 text-slate-400 hover:text-slate-700 hover:bg-black/5 rounded-lg transition-all"
+                  className="tap-target p-2 text-slate-500 hover:text-slate-800 hover:bg-black/5 rounded-lg transition-all"
+                  aria-expanded={showColorPicker}
+                  aria-label="Cambia colore della nota"
                   title="Cambia colore pastello"
                 >
                   <Palette className="w-3.5 h-3.5" />
@@ -291,7 +335,9 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                           setShowColorPicker(false);
                         }}
                         style={{ backgroundColor: c.bg, borderColor: c.border }}
-                        className="w-5 h-5 rounded-full border shadow-xs hover:scale-110 transition-transform"
+                        className="w-7 h-7 rounded-full border shadow-xs hover:scale-110 transition-transform"
+                        aria-label={`Colore ${c.name}`}
+                        aria-pressed={item.color.toLowerCase() === c.bg.toLowerCase()}
                         title={c.name}
                       />
                     ))}
@@ -306,7 +352,8 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                   e.stopPropagation();
                   onArchive(item.id, !item.isArchived);
                 }}
-                className="p-1 text-slate-400 hover:text-slate-700 hover:bg-black/5 rounded-lg transition-all"
+                className="tap-target p-2 text-slate-500 hover:text-slate-800 hover:bg-black/5 rounded-lg transition-all"
+                aria-label={item.isArchived ? 'Estrai da archivio' : 'Archivia'}
                 title={item.isArchived ? 'Estrai da archivio' : 'Archivia'}
               >
                 <Archive className="w-3.5 h-3.5" />
@@ -319,7 +366,8 @@ export const NoteCard: React.FC<NoteCardProps> = ({
                   e.stopPropagation();
                   onTrash(item.id);
                 }}
-                className="p-1 text-slate-400 hover:text-rose-600 hover:bg-black/5 rounded-lg transition-all"
+                className="tap-target p-2 text-slate-500 hover:text-rose-700 hover:bg-black/5 rounded-lg transition-all"
+                aria-label="Sposta nel cestino"
                 title="Sposta nel cestino"
               >
                 <Trash2 className="w-3.5 h-3.5" />

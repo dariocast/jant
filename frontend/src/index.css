@@ -49,3 +49,80 @@
   break-inside: avoid;
   margin-bottom: 1.25rem;
 }
+
+/* ---------------------------------------------------------------
+   Accessibilità & feedback di interazione
+   --------------------------------------------------------------- */
+
+/* Focus ring visibile e coerente su ogni controllo interattivo.
+   Usa :focus-visible per non disturbare l'interazione col mouse. */
+:focus-visible {
+  outline: 2px solid #B45309;
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #B45309;
+  outline-offset: 2px;
+}
+
+/* Area di tocco minima 44x44 per i controlli icona su schermi touch,
+   senza alterare la dimensione visiva dell'icona. */
+@media (pointer: coarse) {
+  .tap-target {
+    position: relative;
+  }
+  .tap-target::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* Rispetto delle preferenze di movimento ridotto */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Safe area per notch e barre di sistema in modalità PWA standalone */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Skeleton di caricamento */
+@keyframes junt-shimmer {
+  0% { opacity: 0.55; }
+  50% { opacity: 0.9; }
+  100% { opacity: 0.55; }
+}
+.skeleton {
+  animation: junt-shimmer 1.4s ease-in-out infinite;
+  background-color: #EEEDEA;
+}
+
+/* Ingresso morbido per toast e pannelli */
+@keyframes junt-slide-up {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up {
+  animation: junt-slide-up 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}

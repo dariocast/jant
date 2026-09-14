@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { X, Download, Upload, FileJson, CheckCircle2, AlertCircle, FileText } from 'lucide-react';
 import { Item } from '../types';
+import { useDialog } from '../hooks/useDialog';
 
 interface BackupModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
   const [importing, setImporting] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ text: string; isError: boolean } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const containerRef = useDialog(isOpen);
 
   if (!isOpen) return null;
 
@@ -119,8 +121,19 @@ export const BackupModal: React.FC<BackupModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/40 backdrop-blur-xs animate-in fade-in">
-      <div className="w-full max-w-lg bg-white rounded-3xl border border-slate-200 shadow-modal overflow-hidden flex flex-col">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/40 backdrop-blur-xs animate-in fade-in"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        ref={containerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="backup-title"
+        className="w-full max-w-lg bg-white rounded-3xl border border-slate-200 shadow-modal overflow-hidden flex flex-col max-h-[90vh]"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 bg-[#FBFBFA]">
           <div className="flex items-center gap-2.5">
@@ -128,26 +141,29 @@ export const BackupModal: React.FC<BackupModalProps> = ({
               <Download className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-serif font-bold text-lg text-slate-900 leading-tight">
+              <h3 id="backup-title" className="font-serif font-bold text-lg text-slate-900 leading-tight">
                 Import &amp; Export Dati
               </h3>
-              <p className="text-xs text-slate-500 font-medium">
+              <p className="text-xs text-slate-600 font-medium">
                 Salva o ripristina le tue note e i tuoi task
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-all"
+            aria-label="Chiudi backup"
+            className="p-2.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-all"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-5 sm:p-6 flex flex-col gap-5">
+        <div className="p-5 sm:p-6 flex flex-col gap-5 overflow-y-auto">
           {statusMessage && (
             <div
+              role="status"
+              aria-live="polite"
               className={`p-3.5 rounded-2xl flex items-center gap-2.5 text-xs font-semibold ${
                 statusMessage.isError
                   ? 'bg-rose-50 text-rose-800 border border-rose-200'
@@ -165,7 +181,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
 
           {/* Export Section */}
           <div className="flex flex-col gap-2.5">
-            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+            <h4 className="text-xs font-bold text-slate-600 uppercase tracking-wider">
               Esportazione (Backup)
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -205,7 +221,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
 
           {/* Import Section */}
           <div className="flex flex-col gap-2.5">
-            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+            <h4 className="text-xs font-bold text-slate-600 uppercase tracking-wider">
               Importazione
             </h4>
             <div className="p-4 rounded-2xl border-2 border-dashed border-slate-200 hover:border-amber-300 transition-colors text-center flex flex-col items-center justify-center gap-2 bg-slate-50/50">
@@ -224,7 +240,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
                 <p className="text-xs font-bold text-slate-800">
                   Carica un file di backup (.json)
                 </p>
-                <p className="text-[11px] text-slate-400 mt-0.5">
+                <p className="text-[11px] text-slate-600 mt-0.5">
                   Gli elementi verranno uniti o aggiornati localmente
                 </p>
               </div>
@@ -232,7 +248,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
                 type="button"
                 disabled={importing}
                 onClick={() => fileInputRef.current?.click()}
-                className="mt-1 px-4 py-1.5 text-xs font-bold rounded-xl bg-slate-900 text-white hover:bg-slate-800 active:scale-95 transition-all shadow-xs"
+                className="mt-1 px-4 py-2.5 text-xs font-bold rounded-xl bg-slate-900 text-white hover:bg-slate-800 active:scale-95 transition-all shadow-xs disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {importing ? 'Importazione in corso...' : 'Seleziona file JSON'}
               </button>
@@ -244,7 +260,7 @@ export const BackupModal: React.FC<BackupModalProps> = ({
         <div className="p-3.5 border-t border-slate-100 bg-[#FBFBFA] flex items-center justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-1.5 font-semibold text-xs text-slate-700 hover:bg-slate-200/60 rounded-xl transition-all"
+            className="px-4 py-2.5 font-semibold text-xs text-slate-700 hover:bg-slate-200/60 rounded-xl transition-all"
           >
             Chiudi
           </button>

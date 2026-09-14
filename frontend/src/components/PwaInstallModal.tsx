@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useDialog } from '../hooks/useDialog';
 import {
   X,
   Download,
@@ -63,6 +64,8 @@ export const PwaInstallModal: React.FC<PwaInstallModalProps> = ({
     setIsIOS(isIosDevice);
   }, []);
 
+  const containerRef = useDialog(isOpen);
+
   if (!isOpen) return null;
 
   const handleInstallClick = async () => {
@@ -85,8 +88,19 @@ export const PwaInstallModal: React.FC<PwaInstallModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/50 backdrop-blur-sm transition-opacity animate-in fade-in">
-      <div className="w-full max-w-2xl bg-white rounded-3xl border border-slate-200 shadow-modal overflow-hidden flex flex-col max-h-[92vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/50 backdrop-blur-sm transition-opacity animate-in fade-in"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        ref={containerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Installa J.U.N.T. come applicazione"
+        className="w-full max-w-2xl bg-white rounded-3xl border border-slate-200 shadow-modal overflow-hidden flex flex-col max-h-[92vh]"
+      >
         {/* Header - Supercell Store Style */}
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-amber-50/80 via-white to-sky-50/80">
           <div className="flex items-center gap-3">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { StatsData } from '../types';
+import { useDialog } from '../hooks/useDialog';
 import {
   X,
   Clock,
@@ -18,11 +19,24 @@ interface StatsDrawerProps {
 }
 
 export const StatsDrawer: React.FC<StatsDrawerProps> = ({ isOpen, onClose, stats }) => {
+  const containerRef = useDialog(isOpen);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in">
-      <div className="w-full max-w-xl bg-white rounded-3xl border border-slate-200 shadow-modal overflow-hidden flex flex-col max-h-[90vh]">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        ref={containerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="stats-title"
+        className="w-full max-w-xl bg-white rounded-3xl border border-slate-200 shadow-modal overflow-hidden flex flex-col max-h-[90vh]"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-slate-100 bg-[#FBFBFA]">
           <div className="flex items-center gap-2.5">
@@ -30,7 +44,7 @@ export const StatsDrawer: React.FC<StatsDrawerProps> = ({ isOpen, onClose, stats
               <BarChart2 className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-serif font-bold text-xl text-slate-900 leading-tight">
+              <h2 id="stats-title" className="font-serif font-bold text-xl text-slate-900 leading-tight">
                 Dashboard Produttività
               </h2>
               <p className="text-xs text-slate-500 font-medium">
@@ -40,9 +54,10 @@ export const StatsDrawer: React.FC<StatsDrawerProps> = ({ isOpen, onClose, stats
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-all"
+            aria-label="Chiudi statistiche"
+            className="p-2.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-all"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -112,7 +127,7 @@ export const StatsDrawer: React.FC<StatsDrawerProps> = ({ isOpen, onClose, stats
                   </div>
                 </div>
                 {stats.activeTimersCount > 0 && (
-                  <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-purple-600 text-white animate-pulse">
+                  <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-purple-700 text-white">
                     Live
                   </span>
                 )}
@@ -153,7 +168,7 @@ export const StatsDrawer: React.FC<StatsDrawerProps> = ({ isOpen, onClose, stats
               </div>
             </>
           ) : (
-            <div className="text-center py-8 text-slate-400 text-sm">
+            <div className="text-center py-8 text-slate-600 text-sm">
               Caricamento statistiche in corso...
             </div>
           )}

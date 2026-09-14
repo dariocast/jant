@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Keyboard, Command } from 'lucide-react';
+import { useDialog } from '../hooks/useDialog';
 
 interface ShortcutsHelpModalProps {
   isOpen: boolean;
@@ -7,23 +8,37 @@ interface ShortcutsHelpModalProps {
 }
 
 export const ShortcutsHelpModal: React.FC<ShortcutsHelpModalProps> = ({ isOpen, onClose }) => {
+  const containerRef = useDialog(isOpen);
+
   if (!isOpen) return null;
 
   const shortcuts = [
     { key: '⌘ + Invio', description: 'Salva e chiudi / Crea nota' },
     { key: '⌘ + K  o  /', description: 'Cerca note, task e tag' },
+    { key: 'Icona ✦ nella barra', description: 'Attiva la ricerca semantica AI' },
     { key: '⌘ + N  o  N', description: 'Nuova nota rapida' },
     { key: '⌘ + ⇧ + T  o  T', description: 'Filtra Task & Scadenze' },
     { key: '⌘ + ⇧ + S  o  S', description: 'Dashboard Statistiche' },
     { key: '⌘ + ⇧ + B  o  B', description: 'Backup / Import & Export' },
     { key: 'G', description: 'Alterna vista Griglia / Elenco' },
     { key: '⌘ + /  o  ?', description: 'Mostra guida scorciatoie' },
-    { key: 'Esc', description: 'Chiudi finestre / Annulla ricerca' },
+    { key: 'Esc', description: 'Chiudi le finestre (l\'editor salva prima di chiudere)' },
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/40 backdrop-blur-xs animate-in fade-in">
-      <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-modal overflow-hidden flex flex-col">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/40 backdrop-blur-xs animate-in fade-in"
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        ref={containerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="shortcuts-title"
+        className="w-full max-w-md bg-white rounded-3xl border border-slate-200 shadow-modal overflow-hidden flex flex-col max-h-[90vh]"
+      >
         {/* Header */}
         <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100 bg-[#FBFBFA]">
           <div className="flex items-center gap-2.5">
@@ -31,7 +46,7 @@ export const ShortcutsHelpModal: React.FC<ShortcutsHelpModalProps> = ({ isOpen, 
               <Keyboard className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-serif font-bold text-lg text-slate-900 leading-tight">
+              <h3 id="shortcuts-title" className="font-serif font-bold text-lg text-slate-900 leading-tight">
                 Scorciatoie da Tastiera
               </h3>
               <p className="text-xs text-slate-500 font-medium">
@@ -41,20 +56,21 @@ export const ShortcutsHelpModal: React.FC<ShortcutsHelpModalProps> = ({ isOpen, 
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-all"
+            aria-label="Chiudi scorciatoie"
+            className="p-2.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-all"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
         {/* Shortcuts Table */}
-        <div className="p-4 sm:p-5 flex flex-col gap-2">
+        <div className="p-4 sm:p-5 flex flex-col gap-2 overflow-y-auto">
           {shortcuts.map((s) => (
             <div
               key={s.key}
               className="flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 transition-colors"
             >
-              <span className="text-xs font-medium text-slate-700">
+              <span className="text-xs font-medium text-slate-800">
                 {s.description}
               </span>
               <kbd className="px-2.5 py-1 text-xs font-mono font-bold bg-slate-100 text-slate-800 border border-slate-300/80 rounded-lg shadow-2xs">
@@ -67,12 +83,12 @@ export const ShortcutsHelpModal: React.FC<ShortcutsHelpModalProps> = ({ isOpen, 
         {/* Footer */}
         <div className="p-3.5 border-t border-slate-100 bg-[#FBFBFA] flex items-center justify-between text-xs text-slate-400">
           <span className="flex items-center gap-1 font-medium">
-            <Command className="w-3.5 h-3.5" />
+            <Command className="w-3.5 h-3.5" aria-hidden="true" />
             <span>Productivity Ready</span>
           </span>
           <button
             onClick={onClose}
-            className="px-3.5 py-1 font-semibold text-slate-700 hover:bg-slate-200/60 rounded-xl transition-all"
+            className="px-3.5 py-2.5 font-semibold text-slate-700 hover:bg-slate-200/60 rounded-xl transition-all"
           >
             Chiudi
           </button>
