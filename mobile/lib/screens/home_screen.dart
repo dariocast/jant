@@ -48,7 +48,21 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                 },
               )
-            : const Text('J.A.N.T.'),
+            : Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: Image.asset(
+                      'assets/images/logo-light.png',
+                      width: 32,
+                      height: 32,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text('J.U.N.T.'),
+                ],
+              ),
         actions: [
           IconButton(
             icon: Icon(_isSearching ? Icons.close : Icons.search_rounded),
@@ -96,14 +110,24 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                const DrawerHeader(
-                  decoration: BoxDecoration(color: Color(0xFFFEF3C7)),
+                DrawerHeader(
+                  decoration: const BoxDecoration(color: Color(0xFFFEF3C7)),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text('J.A.N.T.', style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Color(0xFF78350F))),
-                      Text('Notes, Tasks & Time Logging', style: TextStyle(fontSize: 12, color: Color(0xFF92400E))),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          'assets/images/logo-light.png',
+                          width: 48,
+                          height: 48,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text('J.U.N.T.', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF78350F))),
+                      const Text('Just Unified Notes & Tasks', style: TextStyle(fontSize: 12, color: Color(0xFF92400E))),
                     ],
                   ),
                 ),

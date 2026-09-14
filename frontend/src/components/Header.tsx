@@ -33,14 +33,16 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
         {/* Brand & Title */}
         <div className="flex items-center gap-3 select-none">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-200 via-sky-200 to-purple-200 flex items-center justify-center shadow-soft border border-slate-200/60 flex-shrink-0">
-            <span className="font-serif font-black text-xl text-slate-800 tracking-tight">J</span>
-          </div>
+          <img
+            src="/logo-light.png"
+            alt="J.U.N.T. Logo"
+            className="w-10 h-10 rounded-2xl object-cover shadow-soft border border-slate-200/60 flex-shrink-0"
+          />
           <div>
             <h1 className="font-serif font-bold text-2xl sm:text-3xl text-slate-900 tracking-tight leading-none flex items-center gap-2">
-              J.A.N.T.
+              J.U.N.T.
               <span className="hidden sm:inline-block text-[11px] font-sans font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200/60">
-                v0.1.0
+                v0.1.1
               </span>
             </h1>
             <p className="hidden md:block text-xs text-slate-500 font-medium">

@@ -90,13 +90,15 @@ export const PwaInstallModal: React.FC<PwaInstallModalProps> = ({
         {/* Header - Supercell Store Style */}
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-amber-50/80 via-white to-sky-50/80">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-300 via-sky-300 to-purple-300 flex items-center justify-center shadow-soft border border-white flex-shrink-0">
-              <span className="font-serif font-black text-2xl text-slate-800">J</span>
-            </div>
+            <img
+              src="/logo-light.png"
+              alt="J.U.N.T. Store"
+              className="w-12 h-12 rounded-2xl object-cover shadow-soft border border-white flex-shrink-0"
+            />
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="font-serif font-bold text-xl sm:text-2xl text-slate-900 leading-tight">
-                  J.A.N.T. Store
+                  J.U.N.T. Store
                 </h2>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wide bg-emerald-100 text-emerald-800 border border-emerald-200">
                   FOSS PWA

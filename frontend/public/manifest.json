@@ -1,6 +1,6 @@
 {
-  "name": "J.A.N.T. — Just Another Notes & Tasks",
-  "short_name": "J.A.N.T.",
+  "name": "J.U.N.T. — Just Unified Notes & Tasks",
+  "short_name": "J.U.N.T.",
   "description": "App FOSS self-hosted, ultra-leggera e zero costi per note, task unificati, time tracking atomico e ricerca semantica AI locale.",
   "id": "/",
   "start_url": "/",
@@ -13,27 +13,27 @@
   "categories": ["productivity", "utilities"],
   "icons": [
     {
-      "src": "/icons/icon-192.svg",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-192.svg",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/icons/icon-512.svg",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512.svg",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "maskable"
     }
   ],

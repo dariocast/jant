@@ -27,7 +27,7 @@ class StatsDialog extends StatelessWidget {
                     Icon(Icons.bar_chart_rounded, color: Color(0xFFD97706)),
                     SizedBox(width: 8),
                     Text(
-                      'Statistiche J.A.N.T.',
+                      'Statistiche J.U.N.T.',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ],
