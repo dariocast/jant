@@ -1,15 +1,18 @@
-const CACHE_NAME = 'jant-cache-v0.1.0';
+const CACHE_NAME = 'jant-cache-v0.2.0';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/favicon.svg',
-  '/icons/icon-192.svg',
-  '/icons/icon-512.svg',
-  '/screenshots/screenshot-narrow-1.svg',
-  '/screenshots/screenshot-narrow-2.svg',
-  '/screenshots/screenshot-narrow-3.svg',
-  '/screenshots/screenshot-wide.svg'
+  '/logo-light.png',
+  '/logo-dark.png',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
+  '/icons/icon-maskable-192.png',
+  '/icons/icon-maskable-512.png',
+  '/screenshots/screenshot-narrow-1.png',
+  '/screenshots/screenshot-narrow-2.png',
+  '/screenshots/screenshot-narrow-3.png',
+  '/screenshots/screenshot-wide.png'
 ];
 
 self.addEventListener('install', (event) => {

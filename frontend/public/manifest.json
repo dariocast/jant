@@ -19,7 +19,7 @@
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-192.png",
+      "src": "/icons/icon-maskable-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
@@ -31,7 +31,7 @@
       "purpose": "any"
     },
     {
-      "src": "/icons/icon-512.png",
+      "src": "/icons/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -39,30 +39,30 @@
   ],
   "screenshots": [
     {
-      "src": "/screenshots/screenshot-narrow-1.svg",
+      "src": "/screenshots/screenshot-narrow-1.png",
       "sizes": "1080x2340",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "form_factor": "narrow",
       "label": "Bacheca note e task con colori pastello e timer atomico"
     },
     {
-      "src": "/screenshots/screenshot-narrow-2.svg",
+      "src": "/screenshots/screenshot-narrow-2.png",
       "sizes": "1080x2340",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "form_factor": "narrow",
       "label": "Time Tracker integrato con metriche di produttività"
     },
     {
-      "src": "/screenshots/screenshot-narrow-3.svg",
+      "src": "/screenshots/screenshot-narrow-3.png",
       "sizes": "1080x2340",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "form_factor": "narrow",
       "label": "Ricerca semantica AI istantanea e 100% offline"
     },
     {
-      "src": "/screenshots/screenshot-wide.svg",
+      "src": "/screenshots/screenshot-wide.png",
       "sizes": "1920x1080",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "form_factor": "wide",
       "label": "Interfaccia desktop completa con griglia Keep-style fluida"
     }
@@ -73,21 +73,21 @@
       "short_name": "Nota",
       "description": "Crea istantaneamente una nuova nota o idea",
       "url": "/?action=new-note",
-      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Nuovo Task",
       "short_name": "Task",
       "description": "Aggiungi un'attività con data di scadenza",
       "url": "/?action=new-task",
-      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Timer & Statistiche",
       "short_name": "Timer",
       "description": "Visualizza il tempo tracciato e le sessioni attive",
       "url": "/?view=stats",
-      "icons": [{ "src": "/icons/icon-192.svg", "sizes": "192x192" }]
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }
