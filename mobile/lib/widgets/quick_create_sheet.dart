@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../models/item_model.dart';
 import '../theme/pastel_theme.dart';
+import 'markdown_toolbar.dart';
 
 class QuickCreateSheet extends StatefulWidget {
   final Function(ItemModel) onCreate;
@@ -84,13 +85,26 @@ class _QuickCreateSheetState extends State<QuickCreateSheet> {
       padding: EdgeInsets.only(
         left: 20,
         right: 20,
-        top: 20,
+        top: 10,
         bottom: MediaQuery.of(context).viewInsets.bottom + 20,
       ),
-      child: Column(
+      child: SingleChildScrollView(
+        child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Maniglia di trascinamento: rende evidente che il pannello si chiude scorrendo.
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              margin: const EdgeInsets.only(bottom: 12),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
           // Header row: Title & Pin
           Row(
             children: [
@@ -99,6 +113,7 @@ class _QuickCreateSheetState extends State<QuickCreateSheet> {
                   controller: _titleController,
                   autofocus: true,
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  textCapitalization: TextCapitalization.sentences,
                   decoration: const InputDecoration(
                     hintText: 'Titolo',
                     border: InputBorder.none,
@@ -107,22 +122,31 @@ class _QuickCreateSheetState extends State<QuickCreateSheet> {
                 ),
               ),
               IconButton(
+                tooltip: _isPinned ? 'Rimuovi dall\'evidenza' : 'Metti in evidenza',
                 icon: Icon(
                   _isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-                  color: _isPinned ? const Color(0xFFD97706) : Colors.black38,
+                  color: _isPinned ? const Color(0xFFD97706) : Colors.black54,
                 ),
                 onPressed: () => setState(() => _isPinned = !_isPinned),
               ),
             ],
           ),
 
+          MarkdownToolbar(
+            onInsert: (prefix, suffix, placeholder) =>
+                insertMarkdownInto(_contentController, prefix, suffix, placeholder),
+          ),
+          const SizedBox(height: 4),
+
           // Content
           TextField(
             controller: _contentController,
-            maxLines: 4,
-            style: const TextStyle(fontSize: 14),
+            maxLines: 5,
+            minLines: 3,
+            style: const TextStyle(fontSize: 14, height: 1.45),
+            textCapitalization: TextCapitalization.sentences,
             decoration: const InputDecoration(
-              hintText: 'Scrivi dettagli, idee o un nuovo task...',
+              hintText: 'Scrivi dettagli, idee o un nuovo task... (supporta Markdown)',
               border: InputBorder.none,
               hintStyle: TextStyle(color: Colors.black38),
             ),
@@ -160,7 +184,8 @@ class _QuickCreateSheetState extends State<QuickCreateSheet> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.add_circle_outline, size: 20, color: Color(0xFFD97706)),
+                tooltip: 'Aggiungi tag',
+                icon: const Icon(Icons.add_circle_outline, size: 22, color: Color(0xFFB45309)),
                 onPressed: _addTag,
               ),
             ],
@@ -168,7 +193,7 @@ class _QuickCreateSheetState extends State<QuickCreateSheet> {
 
           // Color palette selector
           SizedBox(
-            height: 36,
+            height: 40,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: _pastelColors.length,
@@ -177,17 +202,23 @@ class _QuickCreateSheetState extends State<QuickCreateSheet> {
                 final hex = _pastelColors[index];
                 final color = PastelColors.parseHex(hex);
                 final isSelected = _selectedColor == hex;
-                return GestureDetector(
-                  onTap: () => setState(() => _selectedColor = hex),
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      color: color,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isSelected ? const Color(0xFF0F172A) : Colors.black12,
-                        width: isSelected ? 2 : 1,
+                return Semantics(
+                  button: true,
+                  selected: isSelected,
+                  label: 'Colore ${index + 1}',
+                  child: InkWell(
+                    onTap: () => setState(() => _selectedColor = hex),
+                    customBorder: const CircleBorder(),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: color,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isSelected ? const Color(0xFF0F172A) : Colors.black26,
+                          width: isSelected ? 2 : 1,
+                        ),
                       ),
                     ),
                   ),
@@ -205,9 +236,10 @@ class _QuickCreateSheetState extends State<QuickCreateSheet> {
                 children: [
                   // Due Date Picker
                   IconButton(
+                    tooltip: _dueDate != null ? 'Modifica scadenza' : 'Imposta scadenza (crea un task)',
                     icon: Icon(
                       _dueDate != null ? Icons.event_available : Icons.event_outlined,
-                      color: _dueDate != null ? const Color(0xFF0284C7) : Colors.black54,
+                      color: _dueDate != null ? const Color(0xFF0369A1) : Colors.black54,
                     ),
                     onPressed: () async {
                       final pickedDate = await showDatePicker(
@@ -239,7 +271,13 @@ class _QuickCreateSheetState extends State<QuickCreateSheet> {
                   if (_dueDate != null)
                     Text(
                       DateFormat('d MMM, HH:mm').format(_dueDate!),
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0284C7)),
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF0369A1)),
+                    ),
+                  if (_dueDate != null)
+                    IconButton(
+                      tooltip: 'Rimuovi scadenza',
+                      icon: const Icon(Icons.close_rounded, size: 18, color: Colors.black45),
+                      onPressed: () => setState(() => _dueDate = null),
                     ),
                 ],
               ),
@@ -251,12 +289,13 @@ class _QuickCreateSheetState extends State<QuickCreateSheet> {
                   elevation: 0,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
-                icon: const Icon(Icons.add, size: 18),
+                icon: const Icon(Icons.add, size: 20),
                 label: const Text('Crea', style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             ],
           ),
         ],
+        ),
       ),
     );
   }

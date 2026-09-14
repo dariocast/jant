@@ -54,6 +54,37 @@ class JantTheme {
           side: const BorderSide(color: Color(0xFFE2E8F0), width: 1),
         ),
       ),
+      // Area di tocco minima su tutti i controlli, come da linee guida di piattaforma.
+      materialTapTargetSize: MaterialTapTargetSize.padded,
+      iconButtonTheme: IconButtonThemeData(
+        style: IconButton.styleFrom(
+          minimumSize: const Size(48, 48),
+          foregroundColor: const Color(0xFF44403C),
+        ),
+      ),
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(64, 48),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(minimumSize: const Size(64, 48)),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size(64, 48),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ),
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: const Color(0xFF1C1917),
+        contentTextStyle: const TextStyle(color: Colors.white, fontSize: 13.5),
+        actionTextColor: const Color(0xFFFCD34D),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+      ),
+      listTileTheme: const ListTileThemeData(minVerticalPadding: 10),
     );
   }
 }

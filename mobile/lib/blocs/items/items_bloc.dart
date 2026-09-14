@@ -19,6 +19,7 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
     on<AddItemEvent>(_onAddItem);
     on<UpdateItemEvent>(_onUpdateItem);
     on<DeleteItemEvent>(_onDeleteItem);
+    on<RestoreItemEvent>(_onRestoreItem);
     on<ToggleTimerEvent>(_onToggleTimer);
     on<SyncItemsEvent>(_onSyncItems);
   }
@@ -98,6 +99,33 @@ class ItemsBloc extends Bloc<ItemsEvent, ItemsState> {
       syncManager.sync().catchError((_) {});
     } catch (e) {
       emit(ItemsErrorState(e.toString()));
+    }
+  }
+
+  Future<void> _onRestoreItem(RestoreItemEvent event, Emitter<ItemsState> emit) async {
+    try {
+      final item = await dbHelper.getItemById(event.id);
+      if (item != null) {
+        await dbHelper.insertOrUpdate(
+          item.copyWith(isTrashed: false, updatedAt: DateTime.now(), isSynced: false),
+        );
+      }
+      _reloadCurrentView();
+      syncManager.sync().catchError((_) {});
+    } catch (e) {
+      emit(ItemsErrorState(e.toString()));
+    }
+  }
+
+  /// Ricarica l'elenco mantenendo filtro, tag e ricerca correnti.
+  void _reloadCurrentView() {
+    final current = state;
+    if (current is ItemsLoadedState) {
+      add(LoadItemsEvent(
+        filter: current.currentFilter,
+        tag: current.selectedTag,
+        search: current.searchQuery,
+      ));
     }
   }
 

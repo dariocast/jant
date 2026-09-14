@@ -14,7 +14,7 @@ class StatsDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(24, 16, 16, 24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,10 +33,11 @@ class StatsDialog extends StatelessWidget {
                   ],
                 ),
                 IconButton(
+                  tooltip: 'Chiudi',
                   icon: const Icon(Icons.close, size: 20),
                   onPressed: () => Navigator.pop(context),
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
+                  constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                 ),
               ],
             ),
@@ -114,7 +115,7 @@ class StatsDialog extends StatelessWidget {
             const Center(
               child: Text(
                 '100% Offline • Cache SQLite Locale • Sync Hono',
-                style: TextStyle(fontSize: 11, color: Colors.black45, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 11, color: Colors.black54, fontWeight: FontWeight.w500),
               ),
             ),
           ],

@@ -12,6 +12,8 @@ class NoteCardWidget extends StatefulWidget {
   final ValueChanged<bool> onToggleComplete;
   final VoidCallback onTogglePin;
   final VoidCallback onTrash;
+  final VoidCallback? onRestore;
+  final bool isTrashView;
 
   const NoteCardWidget({
     super.key,
@@ -21,6 +23,8 @@ class NoteCardWidget extends StatefulWidget {
     required this.onToggleComplete,
     required this.onTogglePin,
     required this.onTrash,
+    this.onRestore,
+    this.isTrashView = false,
   });
 
   @override
@@ -83,10 +87,13 @@ class _NoteCardWidgetState extends State<NoteCardWidget> {
     final item = widget.item;
     final cardColor = PastelColors.parseHex(item.color);
 
-    return InkWell(
-      onTap: widget.onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(20),
+        splashColor: Colors.black.withValues(alpha: 0.05),
+        child: Container(
         decoration: BoxDecoration(
           color: cardColor,
           borderRadius: BorderRadius.circular(20),
@@ -113,13 +120,11 @@ class _NoteCardWidgetState extends State<NoteCardWidget> {
                 if (item.isTask)
                   Row(
                     children: [
-                      GestureDetector(
-                        onTap: () => widget.onToggleComplete(!item.isCompleted),
-                        child: Icon(
-                          item.isCompleted ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
-                          size: 20,
-                          color: item.isCompleted ? const Color(0xFF10B981) : Colors.black45,
-                        ),
+                      _TapIcon(
+                        icon: item.isCompleted ? Icons.check_circle_rounded : Icons.radio_button_unchecked,
+                        color: item.isCompleted ? const Color(0xFF10B981) : Colors.black54,
+                        tooltip: item.isCompleted ? 'Segna come non completato' : 'Segna come completato',
+                        onTap: widget.isTrashView ? null : () => widget.onToggleComplete(!item.isCompleted),
                       ),
                       if (item.dueDate != null) ...[
                         const SizedBox(width: 6),
@@ -133,9 +138,9 @@ class _NoteCardWidgetState extends State<NoteCardWidget> {
                           child: Text(
                             DateFormat('d MMM, HH:mm').format(item.dueDate!),
                             style: TextStyle(
-                              fontSize: 10,
+                              fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: item.isCompleted ? Colors.black38 : const Color(0xFF0369A1),
+                              color: item.isCompleted ? Colors.black54 : const Color(0xFF075985),
                               decoration: item.isCompleted ? TextDecoration.lineThrough : null,
                             ),
                           ),
@@ -145,13 +150,11 @@ class _NoteCardWidgetState extends State<NoteCardWidget> {
                   )
                 else
                   const SizedBox.shrink(),
-                GestureDetector(
-                  onTap: widget.onTogglePin,
-                  child: Icon(
-                    item.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-                    size: 18,
-                    color: item.isPinned ? const Color(0xFFD97706) : Colors.black26,
-                  ),
+                _TapIcon(
+                  icon: item.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
+                  color: item.isPinned ? const Color(0xFFD97706) : Colors.black45,
+                  tooltip: item.isPinned ? 'Rimuovi dall\'evidenza' : 'Metti in evidenza',
+                  onTap: widget.isTrashView ? null : widget.onTogglePin,
                 ),
               ],
             ),
@@ -175,21 +178,29 @@ class _NoteCardWidgetState extends State<NoteCardWidget> {
             // Content
             if (item.content.isNotEmpty) ...[
               const SizedBox(height: 4),
-              MarkdownBody(
-                data: item.content,
-                selectable: false,
-                shrinkWrap: true,
-                styleSheet: MarkdownStyleSheet(
-                  p: TextStyle(
-                    fontSize: 13,
-                    height: 1.4,
-                    color: item.isCompleted ? Colors.black38 : const Color(0xFF334155),
-                    decoration: item.isCompleted ? TextDecoration.lineThrough : null,
-                  ),
-                  h1: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
-                  h2: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
-                  h3: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
-                  code: const TextStyle(fontSize: 11, fontFamily: 'monospace', backgroundColor: Color(0x10000000)),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 180),
+                child: Wrap(
+                  children: [
+                    MarkdownBody(
+                            data: item.content,
+                      selectable: false,
+                      shrinkWrap: true,
+                      styleSheet: MarkdownStyleSheet(
+                        p: TextStyle(
+                          fontSize: 13,
+                          height: 1.4,
+                          color: item.isCompleted ? Colors.black54 : const Color(0xFF334155),
+                          decoration: item.isCompleted ? TextDecoration.lineThrough : null,
+                        ),
+                        h1: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                        h2: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                        h3: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                        code: const TextStyle(
+                            fontSize: 11, fontFamily: 'monospace', backgroundColor: Color(0x10000000)),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -209,7 +220,7 @@ class _NoteCardWidgetState extends State<NoteCardWidget> {
                     ),
                     child: Text(
                       '#$tag',
-                      style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF334155)),
                     ),
                   );
                 }).toList(),
@@ -221,54 +232,103 @@ class _NoteCardWidgetState extends State<NoteCardWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                  onTap: widget.onToggleTimer,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: item.isTimerRunning
-                          ? const Color(0xFFEF4444)
-                          : (_duration > 0 ? const Color(0xFFFEF3C7) : Colors.white.withValues(alpha: 0.9)),
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(
+                Semantics(
+                  button: true,
+                  label: item.isTimerRunning ? 'Ferma il timer' : 'Avvia il timer',
+                  child: InkWell(
+                    onTap: widget.isTrashView ? null : widget.onToggleTimer,
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
                         color: item.isTimerRunning
-                            ? Colors.transparent
-                            : (_duration > 0 ? const Color(0xFFFDE68A) : Colors.black.withValues(alpha: 0.08)),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          item.isTimerRunning ? Icons.stop_rounded : Icons.play_arrow_rounded,
-                          size: 14,
-                          color: item.isTimerRunning ? Colors.white : const Color(0xFF78350F),
+                            ? const Color(0xFFDC2626)
+                            : (_duration > 0 ? const Color(0xFFFEF3C7) : Colors.white.withValues(alpha: 0.9)),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: item.isTimerRunning
+                              ? Colors.transparent
+                              : (_duration > 0 ? const Color(0xFFFDE68A) : Colors.black.withValues(alpha: 0.08)),
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          _formatTime(_duration),
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'monospace',
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            item.isTimerRunning ? Icons.stop_rounded : Icons.play_arrow_rounded,
+                            size: 16,
                             color: item.isTimerRunning ? Colors.white : const Color(0xFF78350F),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 5),
+                          Text(
+                            _formatTime(_duration),
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'monospace',
+                              color: item.isTimerRunning ? Colors.white : const Color(0xFF78350F),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.delete_outline_rounded, size: 16, color: Colors.black38),
-                  onPressed: widget.onTrash,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
+                Row(
+                  children: [
+                    if (widget.isTrashView && widget.onRestore != null)
+                      _TapIcon(
+                        icon: Icons.restore_rounded,
+                        color: const Color(0xFF047857),
+                        tooltip: 'Ripristina dal cestino',
+                        onTap: widget.onRestore,
+                      ),
+                    _TapIcon(
+                      icon: widget.isTrashView
+                          ? Icons.delete_forever_rounded
+                          : Icons.delete_outline_rounded,
+                      color: widget.isTrashView ? const Color(0xFFB91C1C) : Colors.black54,
+                      tooltip: widget.isTrashView ? 'Elimina definitivamente' : 'Sposta nel cestino',
+                      onTap: widget.onTrash,
+                    ),
+                  ],
                 ),
               ],
             ),
           ],
         ),
+        ),
       ),
+    );
+  }
+}
+
+/// Icona interattiva con area di tocco conforme alle linee guida (48dp),
+/// etichetta per gli screen reader ed effetto di pressione visibile.
+class _TapIcon extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String tooltip;
+  final VoidCallback? onTap;
+
+  const _TapIcon({
+    required this.icon,
+    required this.color,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(icon, size: 20),
+      color: color,
+      tooltip: tooltip,
+      onPressed: onTap,
+      visualDensity: VisualDensity.compact,
+      constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+      padding: EdgeInsets.zero,
+      splashRadius: 24,
     );
   }
 }

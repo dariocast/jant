@@ -48,6 +48,15 @@ class DeleteItemEvent extends ItemsEvent {
   List<Object?> get props => [id, permanent];
 }
 
+/// Riporta un elemento dal cestino all'elenco attivo.
+class RestoreItemEvent extends ItemsEvent {
+  final String id;
+  const RestoreItemEvent(this.id);
+
+  @override
+  List<Object?> get props => [id];
+}
+
 class ToggleTimerEvent extends ItemsEvent {
   final String id;
   const ToggleTimerEvent(this.id);
