@@ -1,7 +1,7 @@
 name: jant_mobile
-description: "J.A.N.T. Mobile App - Offline-First SQLite, Bloc Architecture, Background Timer & Sync."
+description: "J.U.N.T. Mobile App - Offline-First SQLite, Bloc Architecture, Background Timer & Sync."
 publish_to: 'none'
-version: 0.1.0+1
+version: 0.1.1+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -24,6 +24,19 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/logo-light.png"
+  min_sdk_android: 21
+  web:
+    generate: true
+    image_path: "assets/images/logo-light.png"
+  macos:
+    generate: true
+    image_path: "assets/images/logo-light.png"
 
 flutter:
   uses-material-design: true
