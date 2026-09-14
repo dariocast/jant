@@ -12,12 +12,26 @@ import { handleMCPCall } from './mcp.js';
 import { itemsRouter } from './routes/items.js';
 import { searchRouter } from './routes/search.js';
 import { statsRouter } from './routes/stats.js';
+import os from 'os';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = new Hono();
-const VERSION = '0.1.0';
+const VERSION = '0.2.0';
+
+function getLocalIpAddresses(): string[] {
+  const interfaces = os.networkInterfaces();
+  const addresses: string[] = [];
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name] || []) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        addresses.push(iface.address);
+      }
+    }
+  }
+  return addresses;
+}
 
 // Middlewares
 app.use('*', logger());
@@ -109,9 +123,22 @@ async function start() {
   serve({
     fetch: app.fetch,
     port,
+    hostname: '0.0.0.0',
   }, (info) => {
-    console.log(`✨ J.A.N.T. Backend v${VERSION} running at http://localhost:${info.port}`);
-    console.log(`📡 MCP Endpoint available at http://localhost:${info.port}/mcp`);
+    const localIps = getLocalIpAddresses();
+    console.log(`\n======================================================`);
+    console.log(`  🌿 J.U.N.T. Server v${VERSION} is ready!`);
+    console.log(`======================================================`);
+    console.log(`  ➜ Local:   http://localhost:${info.port}`);
+    if (localIps.length > 0) {
+      localIps.forEach((ip) => {
+        console.log(`  ➜ Network: http://${ip}:${info.port} (📱 Usa questo per testare da device/PWA)`);
+      });
+    } else {
+      console.log(`  ➜ Network: http://0.0.0.0:${info.port}`);
+    }
+    console.log(`  ➜ MCP:     http://localhost:${info.port}/mcp`);
+    console.log(`======================================================\n`);
   });
 }
 

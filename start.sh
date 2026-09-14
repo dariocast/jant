@@ -2,7 +2,7 @@
 set -e
 
 echo "=========================================="
-echo "  ✨ Starting J.A.N.T. Development Server"
+echo "  🌿 Starting J.U.N.T. Server"
 echo "=========================================="
 
 # Build frontend if needed
