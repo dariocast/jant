@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 2340" width="1080" height="2340">
+  <rect width="1080" height="2340" fill="#FBFBFA"/>
+  <!-- Status Bar -->
+  <rect width="1080" height="90" fill="#FFFFFF"/>
+  <text x="70" y="60" font-family="-apple-system, sans-serif" font-size="34" font-weight="600" fill="#0F172A">9:41</text>
+  <!-- Header -->
+  <text x="70" y="190" font-family="'Playfair Display', Georgia, serif" font-size="70" font-weight="800" fill="#0F172A">J.A.N.T.</text>
+  <text x="70" y="240" font-family="-apple-system, sans-serif" font-size="28" fill="#64748B">Just Another Notes &amp; Tasks • AI &amp; Time Logging</text>
+  <!-- Search bar -->
+  <rect x="60" y="280" width="960" height="100" rx="50" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="3"/>
+  <text x="130" y="342" font-family="-apple-system, sans-serif" font-size="32" fill="#94A3B8">✨ Ricerca semantica o filtra note...</text>
+  <!-- Card 1: Pastel Amber Note -->
+  <rect x="60" y="420" width="960" height="380" rx="36" fill="#FEF3C7" stroke="#FDE68A" stroke-width="2"/>
+  <text x="110" y="490" font-family="'Playfair Display', Georgia, serif" font-size="42" font-weight="700" fill="#78350F">Strategia Q4 &amp; Architettura</text>
+  <text x="110" y="550" font-family="-apple-system, sans-serif" font-size="30" fill="#92400E">Rilascio motore SQLite-Vec con Transformers.js integrato localmente.</text>
+  <rect x="110" y="700" width="160" height="50" rx="25" fill="#F59E0B" fill-opacity="0.2"/>
+  <text x="140" y="735" font-family="-apple-system, sans-serif" font-size="24" font-weight="600" fill="#B45309">#backend</text>
+  <rect x="760" y="690" width="210" height="65" rx="32" fill="#B45309"/>
+  <text x="800" y="733" font-family="-apple-system, sans-serif" font-size="26" font-weight="700" fill="#FFFFFF">▶ 01:24:18</text>
+  <!-- Card 2: Pastel Sky Task -->
+  <rect x="60" y="830" width="960" height="420" rx="36" fill="#E0F2FE" stroke="#BAE6FD" stroke-width="2"/>
+  <circle cx="120" cy="900" r="22" fill="#0284C7"/>
+  <text x="160" y="910" font-family="'Playfair Display', Georgia, serif" font-size="42" font-weight="700" fill="#0C4A6E">Review PR Flutter Bloc</text>
+  <text x="110" y="980" font-family="-apple-system, sans-serif" font-size="30" fill="#0369A1">Verificare sincronizzazione cache offline e stream reactive.</text>
+  <rect x="110" y="1030" width="280" height="55" rx="28" fill="#FFFFFF" fill-opacity="0.7"/>
+  <text x="140" y="1068" font-family="-apple-system, sans-serif" font-size="26" font-weight="600" fill="#0369A1">📅 Scadenza: Oggi, 18:00</text>
+  <rect x="760" y="1140" width="210" height="65" rx="32" fill="#0284C7"/>
+  <text x="800" y="1183" font-family="-apple-system, sans-serif" font-size="26" font-weight="700" fill="#FFFFFF">▶ 00:45:10</text>
+  <!-- Card 3: Pastel Sage Note -->
+  <rect x="60" y="1280" width="960" height="380" rx="36" fill="#DCFCE7" stroke="#BBF7D0" stroke-width="2"/>
+  <text x="110" y="1350" font-family="'Playfair Display', Georgia, serif" font-size="42" font-weight="700" fill="#14532D">Idee Design UI/UX Pastel</text>
+  <text x="110" y="1410" font-family="-apple-system, sans-serif" font-size="30" fill="#166534">Palette morbida crema e lavanda con Playfair Display e Plus Jakarta Sans.</text>
+  <rect x="110" y="1560" width="130" height="50" rx="25" fill="#16A34A" fill-opacity="0.2"/>
+  <text x="140" y="1595" font-family="-apple-system, sans-serif" font-size="24" font-weight="600" fill="#15803D">#design</text>
+  <!-- Bottom bar -->
+  <rect y="2180" width="1080" height="160" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <text x="200" y="2270" font-family="-apple-system, sans-serif" font-size="34" font-weight="700" fill="#0F172A">📝 Note</text>
+  <text x="500" y="2270" font-family="-apple-system, sans-serif" font-size="34" font-weight="700" fill="#64748B">⏱ Timer</text>
+  <text x="800" y="2270" font-family="-apple-system, sans-serif" font-size="34" font-weight="700" fill="#64748B">📊 Stats</text>
+</svg>

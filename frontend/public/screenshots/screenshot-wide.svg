@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <rect width="1920" height="1080" fill="#FBFBFA"/>
+  <!-- Top Navigation -->
+  <rect width="1920" height="80" fill="#FFFFFF" stroke="#F1F5F9" stroke-width="2"/>
+  <text x="60" y="52" font-family="'Playfair Display', Georgia, serif" font-size="36" font-weight="800" fill="#0F172A">J.A.N.T.</text>
+  <text x="180" y="50" font-family="-apple-system, sans-serif" font-size="18" fill="#64748B">Just Another Notes &amp; Tasks • Pastel Productivity Suite</text>
+  <!-- Search Bar Center -->
+  <rect x="600" y="16" width="720" height="48" rx="24" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="640" y="46" font-family="-apple-system, sans-serif" font-size="16" fill="#94A3B8">✨ Cerca qualsiasi idea, nota o task con AI semantica...</text>
+  <!-- Quick Creation Bar -->
+  <rect x="500" y="110" width="920" height="64" rx="20" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5"/>
+  <text x="540" y="150" font-family="-apple-system, sans-serif" font-size="18" fill="#64748B">Scrivi una nuova nota o imposta una data per creare un task...</text>
+  <!-- 3 Columns Grid -->
+  <!-- Col 1 -->
+  <rect x="120" y="210" width="520" height="360" rx="24" fill="#FEF3C7" stroke="#FDE68A" stroke-width="1.5"/>
+  <text x="150" y="260" font-family="'Playfair Display', Georgia, serif" font-size="26" font-weight="700" fill="#78350F">Architettura Backend Hono</text>
+  <text x="150" y="305" font-family="-apple-system, sans-serif" font-size="16" fill="#92400E">Entità unificata, time tracking serializzato in JSON e Transformers.js locale.</text>
+  <!-- Col 2 -->
+  <rect x="700" y="210" width="520" height="420" rx="24" fill="#E0F2FE" stroke="#BAE6FD" stroke-width="1.5"/>
+  <text x="730" y="260" font-family="'Playfair Display', Georgia, serif" font-size="26" font-weight="700" fill="#0C4A6E">Sviluppo App Mobile Flutter</text>
+  <text x="730" y="305" font-family="-apple-system, sans-serif" font-size="16" fill="#0369A1">Implementare offline cache con SQLite locale, Bloc state management e sync.</text>
+  <!-- Col 3 -->
+  <rect x="1280" y="210" width="520" height="320" rx="24" fill="#F3E8FF" stroke="#E9D5FF" stroke-width="1.5"/>
+  <text x="1310" y="260" font-family="'Playfair Display', Georgia, serif" font-size="26" font-weight="700" fill="#581C87">PWA Supercell Experience</text>
+  <text x="1310" y="305" font-family="-apple-system, sans-serif" font-size="16" fill="#6B21A8">Modal interattivo con carosello di screenshot, guida iOS e Chromium prompt.</text>
+</svg>

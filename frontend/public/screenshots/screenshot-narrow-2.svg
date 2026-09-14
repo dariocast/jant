@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 2340" width="1080" height="2340">
+  <rect width="1080" height="2340" fill="#FAF5FF"/>
+  <text x="70" y="180" font-family="'Playfair Display', Georgia, serif" font-size="64" font-weight="800" fill="#581C87">Atomic Time Tracker</text>
+  <text x="70" y="235" font-family="-apple-system, sans-serif" font-size="28" fill="#7E22CE">Sessioni di concentrazione e log temporale persistente</text>
+  <!-- Big Timer Card -->
+  <rect x="60" y="320" width="960" height="600" rx="48" fill="#FFFFFF" stroke="#E9D5FF" stroke-width="3"/>
+  <text x="120" y="420" font-family="'Playfair Display', Georgia, serif" font-size="38" font-weight="700" fill="#6B21A8">In corso: Refactor MCP Server API</text>
+  <text x="120" y="580" font-family="-apple-system, monospace" font-size="110" font-weight="800" fill="#7C3AED">02:15:34</text>
+  <rect x="120" y="680" width="380" height="90" rx="45" fill="#EF4444"/>
+  <text x="210" y="738" font-family="-apple-system, sans-serif" font-size="34" font-weight="700" fill="#FFFFFF">⏹ Ferma Timer</text>
+  <!-- Stats row -->
+  <rect x="60" y="960" width="460" height="260" rx="36" fill="#FEF3C7" stroke="#FDE68A" stroke-width="2"/>
+  <text x="100" y="1030" font-family="-apple-system, sans-serif" font-size="26" font-weight="600" fill="#92400E">Oggi Tracciati</text>
+  <text x="100" y="1120" font-family="'Playfair Display', Georgia, serif" font-size="60" font-weight="800" fill="#78350F">4h 12m</text>
+  <rect x="560" y="960" width="460" height="260" rx="36" fill="#DCFCE7" stroke="#BBF7D0" stroke-width="2"/>
+  <text x="600" y="1030" font-family="-apple-system, sans-serif" font-size="26" font-weight="600" fill="#166534">Task Completati</text>
+  <text x="600" y="1120" font-family="'Playfair Display', Georgia, serif" font-size="60" font-weight="800" fill="#14532D">8 / 10</text>
+</svg>
