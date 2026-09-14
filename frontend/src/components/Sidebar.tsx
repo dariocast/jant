@@ -8,9 +8,6 @@ import {
   Trash2,
   Layers,
   Tag,
-  Clock,
-  Cpu,
-  Zap,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -26,6 +23,7 @@ interface SidebarProps {
     activeTimersCount: number;
     totalHoursTracked: number;
   };
+  onCloseMobile?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -35,6 +33,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectTag,
   tags,
   stats,
+  onCloseMobile,
 }) => {
   const navItems: Array<{ id: FilterType; label: string; icon: React.ReactNode; count?: number }> = [
     { id: 'all', label: 'Tutti gli elementi', icon: <Layers className="w-4 h-4" /> },
@@ -57,6 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={() => {
                 onSelectFilter(item.id);
                 onSelectTag(undefined);
+                onCloseMobile?.();
               }}
               className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 isActive
@@ -109,7 +109,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               return (
                 <button
                   key={tag}
-                  onClick={() => onSelectTag(isSelected ? undefined : tag)}
+                  onClick={() => {
+                    onSelectTag(isSelected ? undefined : tag);
+                    onCloseMobile?.();
+                  }}
                   className={`text-xs px-2.5 py-1 rounded-lg transition-all font-medium flex items-center gap-1 ${
                     isSelected
                       ? 'bg-slate-900 text-white shadow-sm'
@@ -123,22 +126,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </div>
         </div>
       )}
-
-      {/* Feature Pills */}
-      <div className="mt-auto p-3.5 rounded-2xl bg-slate-50 border border-slate-200/60 flex flex-col gap-2 text-xs text-slate-600">
-        <div className="flex items-center gap-1.5 font-bold text-slate-800">
-          <Zap className="w-3.5 h-3.5 text-amber-500" />
-          <span>FOSS &amp; 100% Locale</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-          <Cpu className="w-3 h-3 text-purple-500" />
-          <span>Transformers.js + SQLite-Vec</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-          <Clock className="w-3 h-3 text-emerald-500" />
-          <span>Time Logging Atomico</span>
-        </div>
-      </div>
     </aside>
   );
 };

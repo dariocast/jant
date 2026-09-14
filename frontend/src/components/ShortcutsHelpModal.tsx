@@ -10,14 +10,15 @@ export const ShortcutsHelpModal: React.FC<ShortcutsHelpModalProps> = ({ isOpen, 
   if (!isOpen) return null;
 
   const shortcuts = [
-    { key: 'N', description: 'Crea una nuova nota' },
-    { key: 'T', description: 'Crea un nuovo task con scadenza' },
-    { key: '/', description: 'Attiva la barra di ricerca' },
+    { key: '⌘ + Invio', description: 'Salva e chiudi / Crea nota' },
+    { key: '⌘ + K  o  /', description: 'Cerca note, task e tag' },
+    { key: '⌘ + N  o  N', description: 'Nuova nota rapida' },
+    { key: '⌘ + ⇧ + T  o  T', description: 'Filtra Task & Scadenze' },
+    { key: '⌘ + ⇧ + S  o  S', description: 'Dashboard Statistiche' },
+    { key: '⌘ + ⇧ + B  o  B', description: 'Backup / Import & Export' },
     { key: 'G', description: 'Alterna vista Griglia / Elenco' },
-    { key: 'S', description: 'Apri la dashboard Statistiche' },
-    { key: 'B', description: 'Apri il menu Backup / Import & Export' },
-    { key: '?', description: 'Mostra questa guida scorciatoie' },
-    { key: 'Esc', description: 'Chiudi modal / Deseleziona input' },
+    { key: '⌘ + /  o  ?', description: 'Mostra guida scorciatoie' },
+    { key: 'Esc', description: 'Chiudi finestre / Annulla ricerca' },
   ];
 
   return (

@@ -85,11 +85,19 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
     setIsExpanded(false);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   const currentColor = PASTEL_COLORS.find((c) => c.bg === color) || PASTEL_COLORS[0];
 
   return (
     <div
       ref={containerRef}
+      onKeyDown={handleKeyDown}
       style={{ backgroundColor: color, borderColor: currentColor.border }}
       className={`w-full max-w-2xl mx-auto rounded-2xl border transition-all duration-300 shadow-soft mb-8 ${
         isExpanded ? 'p-4 sm:p-5 shadow-card ring-2 ring-amber-200/50' : 'p-2 sm:p-3'
@@ -101,7 +109,7 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
           className="flex items-center justify-between gap-3 cursor-text text-slate-400 px-3 py-1"
         >
           <span className="text-sm font-medium">
-            Prendi una nota, annota un'idea o imposta una scadenza...
+            Prendi una nota, annota un'idea o imposta una scadenza... (⌘N o C)
           </span>
           <div className="flex items-center gap-2">
             <button
@@ -113,7 +121,7 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
                 const d = new Date(Date.now() + 3600000);
                 setDueDate(d.toISOString().slice(0, 16));
               }}
-              title="Nuovo Task con Scadenza"
+              title="Nuovo Task con Scadenza (T)"
               className="p-1.5 text-slate-400 hover:text-amber-700 hover:bg-black/5 rounded-xl transition-all"
             >
               <CheckSquare className="w-4 h-4" />
@@ -158,7 +166,7 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Scrivi qui i dettagli, note o checklist (markdown supportato)..."
+            placeholder="Scrivi qui i dettagli, note o checklist (markdown supportato)... (Salva con ⌘ + Invio)"
             rows={3}
             className="w-full text-sm font-sans text-slate-800 bg-transparent placeholder-slate-400 focus:outline-none resize-none leading-relaxed"
           />

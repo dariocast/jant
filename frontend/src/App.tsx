@@ -18,6 +18,10 @@ import {
   Trash2,
   Archive,
   Layers,
+  X,
+  BarChart3,
+  HardDrive,
+  Keyboard,
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -58,6 +62,8 @@ export const App: React.FC = () => {
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
   }, []);
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   // Keyboard Shortcuts Listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -70,12 +76,56 @@ export const App: React.FC = () => {
         setIsPwaModalOpen(false);
         setIsShortcutsOpen(false);
         setIsBackupOpen(false);
+        setIsMobileMenuOpen(false);
         if (isInput) target.blur();
         return;
       }
 
+      // Combinations with Cmd/Ctrl
+      if (e.metaKey || e.ctrlKey) {
+        if (e.key === 'k' || e.key === 'K') {
+          e.preventDefault();
+          const searchInput = document.querySelector('input[placeholder*="Cerca"]') as HTMLInputElement;
+          if (searchInput) searchInput.focus();
+          return;
+        }
+        if (e.key === 'n' || e.key === 'N') {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          const titleInput = document.querySelector('input[placeholder="Titolo"]') as HTMLInputElement;
+          if (titleInput) {
+            titleInput.focus();
+          } else {
+            const quickBar = document.querySelector('input[placeholder*="Prendi una nota"]') as HTMLInputElement;
+            if (quickBar) quickBar.focus();
+          }
+          return;
+        }
+        if (e.shiftKey && (e.key === 't' || e.key === 'T')) {
+          e.preventDefault();
+          setFilter('tasks');
+          return;
+        }
+        if (e.shiftKey && (e.key === 's' || e.key === 'S')) {
+          e.preventDefault();
+          setIsStatsOpen((prev) => !prev);
+          return;
+        }
+        if (e.shiftKey && (e.key === 'b' || e.key === 'B')) {
+          e.preventDefault();
+          setIsBackupOpen((prev) => !prev);
+          return;
+        }
+        if (e.key === '/') {
+          e.preventDefault();
+          setIsShortcutsOpen((prev) => !prev);
+          return;
+        }
+      }
+
       if (isInput) return;
 
+      // Single-key shortcuts (when no input is focused)
       if (e.key === 'n' || e.key === 'N') {
         e.preventDefault();
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -83,7 +133,7 @@ export const App: React.FC = () => {
         if (titleInput) {
           titleInput.focus();
         } else {
-          const quickBar = document.querySelector('input[placeholder="Cerca note, task o tag..."]') as HTMLInputElement;
+          const quickBar = document.querySelector('input[placeholder*="Prendi una nota"]') as HTMLInputElement;
           if (quickBar) quickBar.focus();
         }
       } else if (e.key === 't' || e.key === 'T') {
@@ -244,13 +294,11 @@ export const App: React.FC = () => {
   const allTags = stats ? Object.keys(stats.tagCounts) : [];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FBFBFA]">
+    <div className="min-h-screen flex flex-col bg-[#FBFBFA] overflow-x-hidden w-full">
       {/* Main App Header */}
       <Header
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
-        isSemanticSearch={isSemanticSearch}
-        onToggleSemanticSearch={() => setIsSemanticSearch(!isSemanticSearch)}
         isGridView={isGridView}
         onToggleGridView={() => setIsGridView(!isGridView)}
         onOpenStats={() => setIsStatsOpen(true)}
@@ -260,25 +308,105 @@ export const App: React.FC = () => {
         onRefresh={loadData}
         isLoading={isLoading}
         isPwaInstallable={Boolean(deferredPrompt) || !isStandalone}
+        isMobileMenuOpen={isMobileMenuOpen}
+        onToggleMobileMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
       />
 
+      {/* Mobile Slide-over Drawer Menu */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-40 md:hidden flex animate-in fade-in">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          {/* Drawer Content */}
+          <div className="relative w-4/5 max-w-xs bg-[#FBFBFA] h-full shadow-2xl p-4 flex flex-col z-50 overflow-y-auto border-r border-slate-200 animate-in slide-in-from-left duration-200">
+            <div className="flex items-center justify-between pb-3 mb-2 border-b border-slate-200/80">
+              <div className="flex items-center gap-2.5">
+                <img src="/logo-light.png" alt="J.U.N.T." className="w-8 h-8 rounded-xl object-cover shadow-soft" />
+                <span className="font-serif font-bold text-lg text-slate-900">J.U.N.T.</span>
+              </div>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <Sidebar
+              currentFilter={filter}
+              onSelectFilter={setFilter}
+              selectedTag={selectedTag}
+              onSelectTag={setSelectedTag}
+              tags={allTags}
+              stats={stats ? {
+                notesCount: stats.notesCount,
+                tasksCount: stats.tasksCount,
+                pendingTasksCount: stats.pendingTasksCount,
+                activeTimersCount: stats.activeTimersCount,
+                totalHoursTracked: stats.totalHoursTracked,
+              } : undefined}
+              onCloseMobile={() => setIsMobileMenuOpen(false)}
+            />
+
+            {/* Mobile Extra Menu Actions */}
+            <div className="mt-auto pt-4 border-t border-slate-200/80 flex flex-col gap-2 text-xs">
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsStatsOpen(true);
+                }}
+                className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 bg-white border border-slate-200 font-semibold shadow-2xs"
+              >
+                <BarChart3 className="w-4 h-4 text-emerald-600" />
+                <span>Statistiche & Timer</span>
+              </button>
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsBackupOpen(true);
+                }}
+                className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 bg-white border border-slate-200 font-semibold shadow-2xs"
+              >
+                <HardDrive className="w-4 h-4 text-slate-600" />
+                <span>Backup / Import & Export</span>
+              </button>
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  setIsShortcutsOpen(true);
+                }}
+                className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 bg-white border border-slate-200 font-semibold shadow-2xs"
+              >
+                <Keyboard className="w-4 h-4 text-slate-600" />
+                <span>Scorciatoie da tastiera</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Content Area */}
-      <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-6 flex flex-col md:flex-row gap-8">
-        {/* Navigation Sidebar */}
-        <Sidebar
-          currentFilter={filter}
-          onSelectFilter={setFilter}
-          selectedTag={selectedTag}
-          onSelectTag={setSelectedTag}
-          tags={allTags}
-          stats={stats ? {
-            notesCount: stats.notesCount,
-            tasksCount: stats.tasksCount,
-            pendingTasksCount: stats.pendingTasksCount,
-            activeTimersCount: stats.activeTimersCount,
-            totalHoursTracked: stats.totalHoursTracked,
-          } : undefined}
-        />
+      <div className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 md:px-8 py-4 sm:py-6 flex flex-col md:flex-row gap-6 md:gap-8">
+        {/* Navigation Sidebar (Desktop only) */}
+        <div className="hidden md:block">
+          <Sidebar
+            currentFilter={filter}
+            onSelectFilter={setFilter}
+            selectedTag={selectedTag}
+            onSelectTag={setSelectedTag}
+            tags={allTags}
+            stats={stats ? {
+              notesCount: stats.notesCount,
+              tasksCount: stats.tasksCount,
+              pendingTasksCount: stats.pendingTasksCount,
+              activeTimersCount: stats.activeTimersCount,
+              totalHoursTracked: stats.totalHoursTracked,
+            } : undefined}
+          />
+        </div>
 
         {/* Center Workspace */}
         <main className="flex-1 flex flex-col min-w-0">

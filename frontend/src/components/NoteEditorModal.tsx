@@ -121,9 +121,17 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
 
   const currentColor = PASTEL_COLORS.find((c) => c.bg === color) || PASTEL_COLORS[0];
 
+  const handleModalKeyDown = (e: React.KeyboardEvent) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+      e.preventDefault();
+      handleSaveAndClose();
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/40 backdrop-blur-xs transition-opacity animate-in fade-in">
       <div
+        onKeyDown={handleModalKeyDown}
         style={{ backgroundColor: color, borderColor: currentColor.border }}
         className="w-full max-w-2xl rounded-3xl border shadow-modal overflow-hidden flex flex-col max-h-[90vh] transition-all"
       >
