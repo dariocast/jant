@@ -232,3 +232,110 @@ itemsRouter.post('/:id/timer/toggle', async (c) => {
     item: formatItem(updated),
   });
 });
+
+// GET /api/items/export - Export backup data
+itemsRouter.get('/backup/export', async (c) => {
+  const items = await prisma.item.findMany({
+    orderBy: { createdAt: 'asc' },
+  });
+
+  const formatted = items.map(formatItem);
+
+  return c.json({
+    app: 'J.U.N.T.',
+    version: '0.2.0',
+    exportedAt: new Date().toISOString(),
+    count: formatted.length,
+    items: formatted,
+  });
+});
+
+// POST /api/items/import - Import backup data
+itemsRouter.post('/backup/import', async (c) => {
+  const body = await c.req.json();
+  const rawItems: any[] = Array.isArray(body) ? body : (body.items || []);
+
+  if (!Array.isArray(rawItems) || rawItems.length === 0) {
+    return c.json({ success: false, error: 'No valid items found in import payload' }, 400);
+  }
+
+  let importedCount = 0;
+
+  for (const raw of rawItems) {
+    const title = raw.title || 'Senza titolo';
+    const content = raw.content || '';
+    const color = raw.color || '#FFFFFF';
+    const isPinned = Boolean(raw.isPinned);
+    const isArchived = Boolean(raw.isArchived);
+    const isTrashed = Boolean(raw.isTrashed);
+    const isCompleted = Boolean(raw.isCompleted);
+    const dueDate = raw.dueDate ? new Date(raw.dueDate) : null;
+    const timeLogs = Array.isArray(raw.timeLogs)
+      ? JSON.stringify(raw.timeLogs)
+      : (typeof raw.timeLogs === 'string' ? raw.timeLogs : '[]');
+    const tags = Array.isArray(raw.tags)
+      ? JSON.stringify(raw.tags)
+      : (typeof raw.tags === 'string' ? raw.tags : '[]');
+
+    const vec = await generateEmbedding(`${title}\n${content}`);
+    const embeddingBuf = float32ArrayToBuffer(vec);
+
+    if (raw.id) {
+      // Upsert by id
+      await prisma.item.upsert({
+        where: { id: raw.id },
+        update: {
+          title,
+          content,
+          color,
+          isPinned,
+          isArchived,
+          isTrashed,
+          dueDate,
+          isCompleted,
+          timeLogs,
+          tags,
+          embedding: embeddingBuf,
+        },
+        create: {
+          id: raw.id,
+          title,
+          content,
+          color,
+          isPinned,
+          isArchived,
+          isTrashed,
+          dueDate,
+          isCompleted,
+          timeLogs,
+          tags,
+          embedding: embeddingBuf,
+        },
+      });
+    } else {
+      await prisma.item.create({
+        data: {
+          title,
+          content,
+          color,
+          isPinned,
+          isArchived,
+          isTrashed,
+          dueDate,
+          isCompleted,
+          timeLogs,
+          tags,
+          embedding: embeddingBuf,
+        },
+      });
+    }
+
+    importedCount++;
+  }
+
+  return c.json({
+    success: true,
+    importedCount,
+    message: `Successfully imported ${importedCount} items`,
+  });
+});

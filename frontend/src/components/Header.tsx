@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Sparkles, LayoutGrid, List, BarChart3, Download, RefreshCw } from 'lucide-react';
+import { Search, Cpu, LayoutGrid, List, BarChart3, Download, RefreshCw, Keyboard, HardDrive } from 'lucide-react';
 
 interface HeaderProps {
   searchQuery: string;
@@ -10,6 +10,8 @@ interface HeaderProps {
   onToggleGridView: () => void;
   onOpenStats: () => void;
   onOpenPwaModal: () => void;
+  onOpenShortcuts: () => void;
+  onOpenBackup: () => void;
   onRefresh: () => void;
   isLoading: boolean;
   isPwaInstallable: boolean;
@@ -24,6 +26,8 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleGridView,
   onOpenStats,
   onOpenPwaModal,
+  onOpenShortcuts,
+  onOpenBackup,
   onRefresh,
   isLoading,
   isPwaInstallable,
@@ -42,11 +46,11 @@ export const Header: React.FC<HeaderProps> = ({
             <h1 className="font-serif font-bold text-2xl sm:text-3xl text-slate-900 tracking-tight leading-none flex items-center gap-2">
               J.U.N.T.
               <span className="hidden sm:inline-block text-[11px] font-sans font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200/60">
-                v0.1.1
+                v0.2.0
               </span>
             </h1>
             <p className="hidden md:block text-xs text-slate-500 font-medium">
-              Notes • Tasks • Atomic Timer • Local AI
+              Notes • Tasks • Atomic Timer • Local Embeddings
             </p>
           </div>
         </div>
@@ -56,7 +60,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div className="relative flex items-center">
             <div className="absolute left-3.5 text-slate-400 pointer-events-none">
               {isSemanticSearch ? (
-                <Sparkles className="w-4 h-4 text-purple-600 animate-pulse" />
+                <Cpu className="w-4 h-4 text-purple-600 animate-pulse" />
               ) : (
                 <Search className="w-4 h-4" />
               )}
@@ -65,7 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange(e.target.value)}
-              placeholder={isSemanticSearch ? "✨ Cerca per significato AI (es. idee di viaggio, riunioni)..." : "Cerca note, task o tag..."}
+              placeholder={isSemanticSearch ? "Cerca per similarità vettoriale (es. idee, progetti)..." : "Cerca note, task o tag (Scorciatoia: /)..."}
               className={`w-full pl-10 pr-24 py-2 text-sm rounded-full border transition-all shadow-sm focus:outline-none focus:ring-2 ${
                 isSemanticSearch
                   ? "bg-purple-50/70 border-purple-200 focus:ring-purple-400/40 text-purple-950 placeholder-purple-400"
@@ -75,15 +79,15 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               type="button"
               onClick={onToggleSemanticSearch}
-              title="Attiva/Disattiva Ricerca Semantica AI"
+              title="Attiva/Disattiva Ricerca Vettoriale Semantica"
               className={`absolute right-2 px-2.5 py-1 text-xs font-semibold rounded-full flex items-center gap-1 transition-all ${
                 isSemanticSearch
                   ? "bg-purple-600 text-white shadow-sm hover:bg-purple-700"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
-              <Sparkles className="w-3 h-3" />
-              <span className="hidden sm:inline">AI</span>
+              <Cpu className="w-3 h-3" />
+              <span className="hidden sm:inline">Vettori</span>
             </button>
           </div>
         </div>
@@ -102,16 +106,34 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Grid / List switch */}
           <button
             onClick={onToggleGridView}
-            title={isGridView ? "Vista Elenco" : "Vista Griglia"}
+            title={isGridView ? "Vista Elenco (G)" : "Vista Griglia (G)"}
             className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 rounded-xl transition-all"
           >
             {isGridView ? <List className="w-4 h-4" /> : <LayoutGrid className="w-4 h-4" />}
           </button>
 
+          {/* Backup / Import-Export Button */}
+          <button
+            onClick={onOpenBackup}
+            title="Importa & Esporta Dati (B)"
+            className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 rounded-xl transition-all"
+          >
+            <HardDrive className="w-4 h-4" />
+          </button>
+
+          {/* Keyboard Shortcuts Help Button */}
+          <button
+            onClick={onOpenShortcuts}
+            title="Scorciatoie da tastiera (?)"
+            className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 rounded-xl transition-all"
+          >
+            <Keyboard className="w-4 h-4" />
+          </button>
+
           {/* Stats Button */}
           <button
             onClick={onOpenStats}
-            title="Statistiche di Produttività"
+            title="Statistiche di Produttività (S)"
             className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-all shadow-sm"
           >
             <BarChart3 className="w-4 h-4 text-emerald-600" />

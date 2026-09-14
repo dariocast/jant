@@ -9,7 +9,7 @@ import {
   Layers,
   Tag,
   Clock,
-  Sparkles,
+  Cpu,
   Zap,
 } from 'lucide-react';
 
@@ -131,7 +131,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <span>FOSS &amp; 100% Locale</span>
         </div>
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-          <Sparkles className="w-3 h-3 text-purple-500" />
+          <Cpu className="w-3 h-3 text-purple-500" />
           <span>Transformers.js + SQLite-Vec</span>
         </div>
         <div className="flex items-center gap-1.5 text-[11px] text-slate-500">

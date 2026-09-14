@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Item, PASTEL_COLORS } from '../types';
+import { MarkdownRenderer } from './MarkdownRenderer';
 import {
   X,
   Pin,
@@ -13,7 +14,9 @@ import {
   Clock,
   CheckCircle2,
   Circle,
-  Sparkles,
+  Check,
+  Eye,
+  Edit3,
 } from 'lucide-react';
 
 interface NoteEditorModalProps {
@@ -46,6 +49,7 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
   const [tagInput, setTagInput] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [liveDuration, setLiveDuration] = useState(item.totalDurationSeconds);
+  const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit');
 
   useEffect(() => {
     setTitle(item.title);
@@ -97,6 +101,17 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
     onClose();
   };
 
+  const handleTogglePreviewCheckbox = (lineIndex: number, newChecked: boolean) => {
+    const lines = content.split('\n');
+    if (lineIndex < lines.length) {
+      lines[lineIndex] = lines[lineIndex].replace(
+        /^(\s*[-*]\s*\[)([ xX])(\]\s*)/,
+        `$1${newChecked ? 'x' : ' '}$3`
+      );
+      setContent(lines.join('\n'));
+    }
+  };
+
   const formatTime = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
@@ -132,6 +147,34 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
               {dueDate ? 'Task' : 'Nota'}
             </span>
+
+            {/* Edit / Preview Tabs */}
+            <div className="ml-3 flex items-center bg-black/5 rounded-lg p-0.5 text-xs font-semibold">
+              <button
+                type="button"
+                onClick={() => setActiveTab('edit')}
+                className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 ${
+                  activeTab === 'edit'
+                    ? 'bg-white text-slate-900 shadow-2xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <Edit3 className="w-3 h-3" />
+                <span>Modifica</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('preview')}
+                className={`px-2.5 py-1 rounded-md transition-all flex items-center gap-1 ${
+                  activeTab === 'preview'
+                    ? 'bg-white text-slate-900 shadow-2xs'
+                    : 'text-slate-500 hover:text-slate-800'
+                }`}
+              >
+                <Eye className="w-3 h-3" />
+                <span>Anteprima</span>
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center gap-1.5">
@@ -181,14 +224,23 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
             className="w-full font-serif font-bold text-2xl sm:text-3xl text-slate-900 bg-transparent placeholder-slate-400 focus:outline-none"
           />
 
-          {/* Body content */}
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Scrivi qui i dettagli o markdown..."
-            rows={8}
-            className="w-full text-base font-sans text-slate-800 bg-transparent placeholder-slate-400 focus:outline-none resize-none leading-relaxed"
-          />
+          {/* Body: Edit mode vs Markdown Preview mode */}
+          {activeTab === 'edit' ? (
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Scrivi qui i dettagli, elenchi (- [ ] task) o markdown..."
+              rows={8}
+              className="w-full text-base font-sans text-slate-800 bg-transparent placeholder-slate-400 focus:outline-none resize-none leading-relaxed"
+            />
+          ) : (
+            <div className="min-h-[160px] p-3 rounded-2xl bg-white/60 border border-black/5">
+              <MarkdownRenderer
+                content={content || '*Nessun contenuto inserito.*'}
+                onToggleCheckbox={handleTogglePreviewCheckbox}
+              />
+            </div>
+          )}
 
           {/* Tags */}
           <div className="flex flex-wrap items-center gap-1.5 pt-2">
@@ -332,7 +384,7 @@ export const NoteEditorModal: React.FC<NoteEditorModalProps> = ({
             className="px-5 py-2 text-xs font-bold text-slate-900 bg-amber-300 hover:bg-amber-400 active:scale-95 rounded-xl shadow-xs transition-all flex items-center gap-1.5"
           >
             <span>Salva e Chiudi</span>
-            <Sparkles className="w-3.5 h-3.5" />
+            <Check className="w-4 h-4" />
           </button>
         </div>
       </div>

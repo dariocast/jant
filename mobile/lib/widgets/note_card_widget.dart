@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import '../models/item_model.dart';
 import '../theme/pastel_theme.dart';
@@ -174,16 +175,22 @@ class _NoteCardWidgetState extends State<NoteCardWidget> {
             // Content
             if (item.content.isNotEmpty) ...[
               const SizedBox(height: 4),
-              Text(
-                item.content,
-                style: TextStyle(
-                  fontSize: 13,
-                  height: 1.4,
-                  color: item.isCompleted ? Colors.black38 : const Color(0xFF334155),
-                  decoration: item.isCompleted ? TextDecoration.lineThrough : null,
+              MarkdownBody(
+                data: item.content,
+                selectable: false,
+                shrinkWrap: true,
+                styleSheet: MarkdownStyleSheet(
+                  p: TextStyle(
+                    fontSize: 13,
+                    height: 1.4,
+                    color: item.isCompleted ? Colors.black38 : const Color(0xFF334155),
+                    decoration: item.isCompleted ? TextDecoration.lineThrough : null,
+                  ),
+                  h1: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                  h2: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                  h3: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                  code: const TextStyle(fontSize: 11, fontFamily: 'monospace', backgroundColor: Color(0x10000000)),
                 ),
-                maxLines: 5,
-                overflow: TextOverflow.ellipsis,
               ),
             ],
 

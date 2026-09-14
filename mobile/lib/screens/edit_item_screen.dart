@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 import '../models/item_model.dart';
 import '../theme/pastel_theme.dart';
@@ -24,6 +25,7 @@ class EditItemScreen extends StatefulWidget {
 class _EditItemScreenState extends State<EditItemScreen> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
+  bool _isPreviewMode = false;
 
   late String _color;
   late bool _isPinned;
@@ -86,8 +88,18 @@ class _EditItemScreenState extends State<EditItemScreen> {
           onPressed: _save,
         ),
         actions: [
+          // Markdown Preview toggle
+          IconButton(
+            tooltip: _isPreviewMode ? 'Modifica testo' : 'Anteprima Markdown',
+            icon: Icon(
+              _isPreviewMode ? Icons.edit_note_rounded : Icons.visibility_outlined,
+              color: _isPreviewMode ? const Color(0xFFD97706) : Colors.black54,
+            ),
+            onPressed: () => setState(() => _isPreviewMode = !_isPreviewMode),
+          ),
           // Pin toggle
           IconButton(
+            tooltip: _isPinned ? 'Rimuovi dai fissati' : 'Fissa in alto',
             icon: Icon(
               _isPinned ? Icons.push_pin : Icons.push_pin_outlined,
               color: _isPinned ? const Color(0xFFD97706) : Colors.black54,
@@ -96,6 +108,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
           ),
           // Archive toggle
           IconButton(
+            tooltip: _isArchived ? 'Ripristina' : 'Archivia',
             icon: Icon(
               _isArchived ? Icons.archive : Icons.archive_outlined,
               color: _isArchived ? const Color(0xFF0284C7) : Colors.black54,
@@ -104,6 +117,7 @@ class _EditItemScreenState extends State<EditItemScreen> {
           ),
           // Delete
           IconButton(
+            tooltip: 'Elimina',
             icon: const Icon(Icons.delete_outline_rounded, color: Colors.black54),
             onPressed: () {
               widget.onDelete();
@@ -153,17 +167,47 @@ class _EditItemScreenState extends State<EditItemScreen> {
                     ),
                   ),
 
-                  // Content
-                  TextField(
-                    controller: _contentController,
-                    maxLines: null,
-                    style: const TextStyle(fontSize: 15, height: 1.5),
-                    decoration: const InputDecoration(
-                      hintText: 'Scrivi dettagli, note o checklist...',
-                      border: InputBorder.none,
-                      hintStyle: TextStyle(color: Colors.black26),
+                  const Divider(height: 16, thickness: 0.5, color: Colors.black12),
+
+                  // Content (Edit or Markdown Preview)
+                  if (_isPreviewMode)
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: MarkdownBody(
+                        data: _contentController.text.trim().isNotEmpty
+                            ? _contentController.text
+                            : '*Nessun contenuto. Tocca l\'icona modifica per scrivere.*',
+                        selectable: true,
+                        styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                          p: const TextStyle(fontSize: 15, height: 1.5, color: Color(0xFF1E293B)),
+                          h1: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                          h2: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                          h3: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                          blockquoteDecoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            borderRadius: BorderRadius.circular(4),
+                            border: const Border(left: BorderSide(color: Color(0xFFD97706), width: 3)),
+                          ),
+                          code: TextStyle(
+                            backgroundColor: Colors.black.withValues(alpha: 0.06),
+                            fontFamily: 'monospace',
+                            fontSize: 13,
+                            color: const Color(0xFF0F172A),
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    TextField(
+                      controller: _contentController,
+                      maxLines: null,
+                      style: const TextStyle(fontSize: 15, height: 1.5),
+                      decoration: const InputDecoration(
+                        hintText: 'Scrivi dettagli, note o checklist (supporta Markdown)...',
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(color: Colors.black26),
+                      ),
                     ),
-                  ),
                   const SizedBox(height: 16),
 
                   // Tags

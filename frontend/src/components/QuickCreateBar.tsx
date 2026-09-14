@@ -7,7 +7,6 @@ import {
   Pin,
   Plus,
   CheckSquare,
-  Sparkles,
   X,
 } from 'lucide-react';
 
@@ -278,10 +277,10 @@ export const QuickCreateBar: React.FC<QuickCreateBarProps> = ({ onCreate }) => {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="px-4 py-1.5 text-xs font-bold text-slate-900 bg-amber-300 hover:bg-amber-400 active:scale-95 rounded-xl shadow-xs transition-all flex items-center gap-1"
+                className="px-4 py-1.5 text-xs font-bold text-slate-900 bg-amber-300 hover:bg-amber-400 active:scale-95 rounded-xl shadow-xs transition-all flex items-center gap-1.5"
               >
-                <span>Crea</span>
-                <Sparkles className="w-3 h-3" />
+                <span>Salva</span>
+                <Plus className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>

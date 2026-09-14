@@ -8,11 +8,13 @@ import { QuickCreateBar } from './components/QuickCreateBar';
 import { NoteEditorModal } from './components/NoteEditorModal';
 import { StatsDrawer } from './components/StatsDrawer';
 import { PwaInstallModal } from './components/PwaInstallModal';
+import { ShortcutsHelpModal } from './components/ShortcutsHelpModal';
+import { BackupModal } from './components/BackupModal';
 import { SemanticSearchResults } from './components/SemanticSearchResults';
 import {
   FileText,
   CheckSquare,
-  Sparkles,
+  Pin,
   Trash2,
   Archive,
   Layers,
@@ -33,6 +35,8 @@ export const App: React.FC = () => {
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [isStatsOpen, setIsStatsOpen] = useState(false);
   const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
+  const [isBackupOpen, setIsBackupOpen] = useState(false);
 
   // PWA Prompt & Standalone detection
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -52,6 +56,60 @@ export const App: React.FC = () => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  // Keyboard Shortcuts Listener
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+
+      if (e.key === 'Escape') {
+        setEditingItem(null);
+        setIsStatsOpen(false);
+        setIsPwaModalOpen(false);
+        setIsShortcutsOpen(false);
+        setIsBackupOpen(false);
+        if (isInput) target.blur();
+        return;
+      }
+
+      if (isInput) return;
+
+      if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        const titleInput = document.querySelector('input[placeholder="Titolo"]') as HTMLInputElement;
+        if (titleInput) {
+          titleInput.focus();
+        } else {
+          const quickBar = document.querySelector('input[placeholder="Cerca note, task o tag..."]') as HTMLInputElement;
+          if (quickBar) quickBar.focus();
+        }
+      } else if (e.key === 't' || e.key === 'T') {
+        e.preventDefault();
+        setFilter('tasks');
+      } else if (e.key === '/') {
+        e.preventDefault();
+        const searchInput = document.querySelector('input[placeholder*="Cerca"]') as HTMLInputElement;
+        if (searchInput) searchInput.focus();
+      } else if (e.key === 'g' || e.key === 'G') {
+        e.preventDefault();
+        setIsGridView((prev) => !prev);
+      } else if (e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        setIsStatsOpen((prev) => !prev);
+      } else if (e.key === 'b' || e.key === 'B') {
+        e.preventDefault();
+        setIsBackupOpen((prev) => !prev);
+      } else if (e.key === '?') {
+        e.preventDefault();
+        setIsShortcutsOpen((prev) => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   // Load items & stats
@@ -119,7 +177,6 @@ export const App: React.FC = () => {
     try {
       const newItem = await api.createItem(data);
       setItems((prev) => [newItem, ...prev]);
-      // Update stats
       api.fetchStats().then(setStats).catch(() => {});
     } catch (err) {
       console.error('Failed to create item:', err);
@@ -198,6 +255,8 @@ export const App: React.FC = () => {
         onToggleGridView={() => setIsGridView(!isGridView)}
         onOpenStats={() => setIsStatsOpen(true)}
         onOpenPwaModal={() => setIsPwaModalOpen(true)}
+        onOpenShortcuts={() => setIsShortcutsOpen(true)}
+        onOpenBackup={() => setIsBackupOpen(true)}
         onRefresh={loadData}
         isLoading={isLoading}
         isPwaInstallable={Boolean(deferredPrompt) || !isStandalone}
@@ -269,7 +328,7 @@ export const App: React.FC = () => {
                   ? 'Gli elementi eliminati appariranno qui prima di essere rimossi definitivamente.'
                   : filter === 'tasks'
                   ? 'Imposta una data di scadenza su qualsiasi nota per trasformarla in un task.'
-                  : 'Usa la barra in alto per creare la tua prima nota o idea!'}
+                  : 'Usa la barra in alto o premi "N" per creare la tua prima nota!'}
               </p>
             </div>
           )}
@@ -277,8 +336,8 @@ export const App: React.FC = () => {
           {/* Pinned Section */}
           {pinnedItems.length > 0 && filter !== 'trash' && filter !== 'archived' && (
             <section className="mb-8">
-              <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 flex items-center gap-1.5 px-1">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <div className="text-xs font-bold text-amber-800 uppercase tracking-wider mb-3 flex items-center gap-1.5 px-1">
+                <Pin className="w-3.5 h-3.5 text-amber-600 fill-current" />
                 <span>In Evidenza ({pinnedItems.length})</span>
               </div>
               <div
@@ -299,6 +358,7 @@ export const App: React.FC = () => {
                       onArchive={(id, archived) => handleUpdate(id, { isArchived: archived })}
                       onTrash={handleTrash}
                       onChangeColor={(id, color) => handleUpdate(id, { color })}
+                      onUpdateContent={(id, newContent) => handleUpdate(id, { content: newContent })}
                     />
                   </div>
                 ))}
@@ -334,6 +394,7 @@ export const App: React.FC = () => {
                       onTrash={handleTrash}
                       onRestore={handleRestore}
                       onChangeColor={(id, color) => handleUpdate(id, { color })}
+                      onUpdateContent={(id, newContent) => handleUpdate(id, { content: newContent })}
                       isTrashView={filter === 'trash'}
                     />
                   </div>
@@ -361,7 +422,7 @@ export const App: React.FC = () => {
         stats={stats}
       />
 
-      {/* PWA Supercell Store Experience Modal */}
+      {/* PWA Experience Modal */}
       <PwaInstallModal
         isOpen={isPwaModalOpen}
         onClose={() => setIsPwaModalOpen(false)}
@@ -371,6 +432,20 @@ export const App: React.FC = () => {
           setIsStandalone(true);
           setDeferredPrompt(null);
         }}
+      />
+
+      {/* Keyboard Shortcuts Help Modal */}
+      <ShortcutsHelpModal
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
+      />
+
+      {/* Backup / Import & Export Modal */}
+      <BackupModal
+        isOpen={isBackupOpen}
+        onClose={() => setIsBackupOpen(false)}
+        onImportSuccess={loadData}
+        items={items}
       />
     </div>
   );

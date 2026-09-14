@@ -15,6 +15,8 @@ import {
   RotateCcw,
 } from 'lucide-react';
 
+import { MarkdownRenderer } from './MarkdownRenderer';
+
 interface NoteCardProps {
   item: Item;
   onEdit: (item: Item) => void;
@@ -25,6 +27,7 @@ interface NoteCardProps {
   onTrash: (id: string) => void;
   onRestore?: (id: string) => void;
   onChangeColor: (id: string, color: string) => void;
+  onUpdateContent?: (id: string, newContent: string) => void;
   isTrashView?: boolean;
 }
 
@@ -38,6 +41,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({
   onTrash,
   onRestore,
   onChangeColor,
+  onUpdateContent,
   isTrashView = false,
 }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
@@ -64,6 +68,18 @@ export const NoteCard: React.FC<NoteCardProps> = ({
       return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     }
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const handleToggleMarkdownCheckbox = (lineIndex: number, newChecked: boolean) => {
+    if (!onUpdateContent) return;
+    const lines = item.content.split('\n');
+    if (lineIndex < lines.length) {
+      lines[lineIndex] = lines[lineIndex].replace(
+        /^(\s*[-*]\s*\[)([ xX])(\]\s*)/,
+        `$1${newChecked ? 'x' : ' '}$3`
+      );
+      onUpdateContent(item.id, lines.join('\n'));
+    }
   };
 
   const currentColor = PASTEL_COLORS.find(c => c.bg.toLowerCase() === item.color.toLowerCase()) || PASTEL_COLORS[0];
@@ -163,13 +179,12 @@ export const NoteCard: React.FC<NoteCardProps> = ({
         )}
 
         {item.content && (
-          <p
-            className={`font-sans text-xs sm:text-sm text-slate-700/90 whitespace-pre-wrap leading-relaxed break-words line-clamp-6 ${
-              item.isCompleted ? 'text-slate-400' : ''
-            }`}
-          >
-            {item.content}
-          </p>
+          <div className="line-clamp-6 overflow-hidden">
+            <MarkdownRenderer
+              content={item.content}
+              onToggleCheckbox={handleToggleMarkdownCheckbox}
+            />
+          </div>
         )}
       </div>
 
