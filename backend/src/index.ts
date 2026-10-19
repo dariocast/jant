@@ -18,7 +18,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = new Hono();
-const VERSION = '0.2.1';
+const VERSION = '0.3.0';
 
 function getLocalIpAddresses(): string[] {
   const interfaces = os.networkInterfaces();
@@ -44,16 +44,15 @@ app.use('*', cors({
 // API Metadata & Health
 app.get('/api/info', (c) => {
   return c.json({
-    name: 'J.A.N.T. Backend',
-    description: 'Just Another Notes & Tasks API & MCP Server',
+    name: 'Jant Atlas',
+    description: 'Local-first workspace for connected thinking',
     version: VERSION,
     status: 'healthy',
     timestamp: new Date().toISOString(),
     features: {
-      unifiedEntity: true,
-      timeTracking: true,
-      vectorEmbeddings: true,
-      mcpServer: true,
+      localFirstWorkspace: true,
+      connectedObjects: true,
+      persistence: 'browser-localStorage',
     },
   });
 });
